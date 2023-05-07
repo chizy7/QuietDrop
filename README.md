@@ -10,6 +10,28 @@ SecureChat is an end-to-end encrypted chat application built using Rust. It prov
 * Group chats: Users can create and participate in group chats, with all messages encrypted and decrypted among group members.
 * File transfer: The application supports encrypted file transfer between users.
 
+## Further Development
+
+1. Implement a user-friendly interface: Design and develop a graphical user interface (GUI) or enhance the existing command-line interface (CLI) to make the application more accessible and enjoyable for users.
+
+2. Improve error handling and logging: Implement comprehensive error handling and logging throughout the application to ensure that issues are reported and handled gracefully.
+
+3. Implement notifications: Add support for notifications, so users can receive alerts when they receive new messages or when other events occur in the chat application.
+
+4. Add multimedia support: Enable users to share images, videos, and other multimedia content within the chat application.
+
+5. Implement message history and search: Store message history and provide a search functionality, allowing users to search and retrieve past messages easily.
+
+6. Develop mobile and desktop clients: Create mobile and desktop clients for different platforms, such as iOS, Android, Windows, macOS, and Linux, to make the application available to a broader audience.
+
+7. Add administrative features: Implement features for chat room administrators or moderators, such as banning users, managing user roles, and configuring chat room settings.
+
+8. Add end-to-end encryption for group chats: Extend the end-to-end encryption functionality to support group chats, ensuring that all messages within a group are encrypted and can only be decrypted by authorized group members.
+
+9. Implement a secure key exchange mechanism: Use a secure key exchange protocol, such as the Diffie-Hellman key exchange, to allow users to securely establish shared encryption keys.
+
+10. Improve scalability: Optimize the server-side components of the application to handle a larger number of concurrent users and messages.
+
 ## Getting Started
 
 ### Prerequisites
