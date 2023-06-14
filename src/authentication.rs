@@ -40,7 +40,7 @@ pub fn hash_password(password: &str) -> (String, String) {
 
 pub fn verify_password(hashed_password: &str, salt: &str, password: &str) -> bool {
     let password_hash = PasswordHash::new(hashed_password).unwrap();
-    let salt_string = SaltString::new(salt).unwrap();
+    let _salt_string = SaltString::new(salt).unwrap();
 
     let config = Params::new(3, 4096, 1, None).unwrap();
     let argon2 = Argon2::new(Algorithm::Argon2id, Version::V0x13, config);
