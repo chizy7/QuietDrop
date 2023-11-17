@@ -17,5 +17,9 @@ pub async fn send_message(
     let response = String::from_utf8_lossy(&buf[..n]);
     println!("Server response: {}", response);
 
+    if response != "Message received." {
+        return Err("Failed to receive proper acknowledgement from server".into())
+    }
+
     Ok(())
 }
