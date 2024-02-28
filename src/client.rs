@@ -18,7 +18,7 @@ pub async fn send_message(
     println!("Server response: {}", response);
 
     if response != "Message received." {
-        return Err("Failed to receive proper acknowledgement from server".into())
+        return Err("Failed to receive proper acknowledgement from server".into());
     }
 
     Ok(())
