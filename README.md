@@ -1,6 +1,6 @@
-# SecureChat
+# QuietDrop
 
-SecureChat is an end-to-end encrypted chat application built using Rust. It provides a secure, private, and easy-to-use communication platform for users, leveraging Rust's memory safety and performance benefits. SecureChat uses modern cryptographic libraries and protocols to ensure the confidentiality and integrity of messages exchanged between users.
+QuietDrop is an end-to-end encrypted chat application built using Rust. It provides a secure, private, and easy-to-use communication platform for users, leveraging Rust's memory safety and performance benefits. QuietDrop uses modern cryptographic libraries and protocols to ensure the confidentiality and integrity of messages exchanged between users.
 
 ## Features
 
@@ -41,8 +41,8 @@ SecureChat is an end-to-end encrypted chat application built using Rust. It prov
 ### Installation
 1. Clone the repository:
 ```
-git clone https://github.com/chizy7/SecureChat.git
-cd securechat
+git clone https://github.com/chizy7/QuietDrop.git
+cd quietdrop
 ```
 2. Build the project:
 ```
