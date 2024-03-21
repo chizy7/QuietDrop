@@ -1,7 +1,7 @@
-use securechat::client;
-use securechat::encryption::generate_keypair;
-use securechat::message::{get_input, Message, MessageType};
-use securechat::server;
+use quietdrop::client;
+use quietdrop::encryption::generate_keypair;
+use quietdrop::message::{get_input, Message, MessageType};
+use quietdrop::server;
 use sodiumoxide::crypto::box_;
 use std::env;
 use std::fs::File;
