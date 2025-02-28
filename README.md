@@ -87,8 +87,42 @@ QuietDrop/
 │   ├── message.rs      - Message handling
 │   └── server.rs       - Server implementation
 ├── docs/               - Documentation
+│   ├── DETAILED_DOCS.md  - Comprehensive documentation
+│   ├── ENCRYPTION.md   - Security architecture
+│   ├── API.md          - API reference
+│   ├── PROJECT_ROADMAP.md - Development roadmap
+│   └── SECURITY.md     - Security policy
 ├── tests/              - Integration tests
-└── ...
+│   ├── authentication_test.rs - Authentication tests
+│   ├── encryption_integration_tests.rs - Encryption tests
+│   ├── message_test.rs - Message handling tests
+│   ├── client_server_test.rs - Client-server tests
+│   └── README.md       - Test documentation
+├── .github/            - GitHub configuration
+│   ├── ISSUE_TEMPLATE/ - Issue templates
+│   └── workflows/      - CI/CD workflows
+├── CODE_OF_CONDUCT.md  - Community standards
+├── CONTRIBUTING.md     - Contribution guidelines
+├── LICENSE             - MIT License
+└── README.md           - This file
+```
+
+## Testing
+
+QuietDrop includes a comprehensive test suite to ensure reliability:
+
+```bash
+# Run all tests
+cargo test
+
+# Run specific component tests
+cargo test encryption
+
+# Run tests with output
+cargo test -- --nocapture
+
+# Run ignored tests that require special setup
+cargo test -- --ignored
 ```
 
 ## Contributing
