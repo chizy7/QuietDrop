@@ -70,6 +70,19 @@ fn test_message_tampering_detection() {
 }
 
 #[test]
+/// Tests that the encryption system enforces key specificity.
+///
+/// This test generates key pairs for three users: Alice, Bob, and Charlie. It verifies that
+/// a message encrypted for a specific recipient can only be decrypted by that recipient:
+/// - Bob can decrypt the message intended for him but fails to decrypt Charlie's message.
+/// - Charlie can decrypt his own message but fails when attempting to decrypt Bob's message.
+///
+/// # Examples
+///
+/// ```
+/// // Run the key specificity test.
+/// test_key_specificity();
+/// ```
 fn test_key_specificity() {
     // Generate key pairs for three users
     let (alice_public_key, alice_secret_key) = generate_keypair();
