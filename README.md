@@ -1,31 +1,35 @@
 <div align="center">
-    <img src="https://via.placeholder.com/150x150?text=🔒" alt="QuietDrop" height="136" />
-<h1 align="center">
-    QuietDrop: End-to-End Encrypted Messaging in Rust
-</h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./.images/quietdrop-logo-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./.images/quietdrop-logo-black.svg">
+    <img alt="QuietDrop Logo" src="./.images/quietdrop-logo-black.svg" width="550" height="200">
+  </picture>
+  <h1>QuietDrop: End-to-End Encrypted Messaging in Rust</h1>
+  <p>
+    <a href="https://github.com/chizy7/QuietDrop/actions"><img src="https://img.shields.io/github/actions/workflow/status/chizy7/QuietDrop/ci.yml?branch=main&style=flat-square&label=build" alt="Build Status"></a>
+    <a href="https://github.com/chizy7/QuietDrop/blob/main/LICENSE"><img src="https://img.shields.io/github/license/chizy7/QuietDrop?style=flat-square" alt="License"></a>
+    <a href="https://github.com/chizy7/QuietDrop"><img src="https://tokei.rs/b1/github/chizy7/QuietDrop?category=code" alt="Lines of Code"></a>
+    <a href="https://github.com/chizy7/QuietDrop/stargazers"><img src="https://img.shields.io/github/stars/chizy7/QuietDrop?style=flat-square" alt="GitHub Stars"></a>
+    <a href="CODE_OF_CONDUCT.md"><img src="https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg" alt="Contributor Covenant"></a>
+    <a href="https://github.com/chizy7/QuietDrop/pulls"><img src="https://img.shields.io/coderabbit/prs/github/chizy7/QuietDrop" alt="CodeRabbit Pull Request Reviews"></a>
+  </p>
+</div> 
 
-[![CI Status][a1]][a2] [![License][b1]][b2] [![Lines of Code][c1]][c2] [![GitHub Stars][d1]][d2] [![Contributor Covenant][e1]][e2]
-
-[a1]: https://img.shields.io/github/actions/workflow/status/chizy7/QuietDrop/ci.yml?branch=main&style=flat-square&label=build
-[a2]: https://github.com/chizy7/QuietDrop/actions
-[b1]: https://img.shields.io/github/license/chizy7/QuietDrop?style=flat-square
-[b2]: https://github.com/chizy7/QuietDrop/blob/main/LICENSE
-[c1]: https://tokei.rs/b1/github/chizy7/QuietDrop?category=code
-[c2]: https://github.com/chizy7/QuietDrop
-[d1]: https://img.shields.io/github/stars/chizy7/QuietDrop?style=flat-square
-[d2]: https://github.com/chizy7/QuietDrop/stargazers
-[e1]: https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg
-[e2]: CODE_OF_CONDUCT.md
-
-> <img src="https://via.placeholder.com/60x60?text=🛡️" alt="QuietDrop mascot" style="vertical-align: middle" align="left" height="60" />QuietDrop is a secure chat application built in Rust, focusing on privacy and security. It implements end-to-end encryption using modern cryptographic libraries to ensure your messages remain confidential.
-
-<br/>
-
-[Getting Started](docs/DETAILED_DOCS.md)&nbsp;&nbsp;•&nbsp;&nbsp;
-[Security Architecture](docs/ENCRYPTION.md)&nbsp;&nbsp;•&nbsp;&nbsp;
-[API Reference](docs/API.md)
+> <picture>
+>   <source media="(prefers-color-scheme: dark)" srcset="./.images/quietdrop-icon-white.svg">
+>   <source media="(prefers-color-scheme: light)" srcset="./.images/quietdrop-icon-black.svg">
+>   <img alt="QuietDrop mascot" src="./.images/quietdrop-icon-black.svg" style="vertical-align: middle; margin-right: 12px" align="left" height="60">
+> </picture>
+> QuietDrop is a secure chat application built in Rust, focusing on privacy and security. It implements end-to-end encryption using modern cryptographic libraries to ensure your messages remain confidential.
 
 <br/>
+
+<div align="center">
+  <p>
+    <a href="docs/DETAILED_DOCS.md">Getting Started</a>&nbsp;&nbsp;•&nbsp;&nbsp;
+    <a href="docs/ENCRYPTION.md">Security Architecture</a>&nbsp;&nbsp;•&nbsp;&nbsp;
+    <a href="docs/API.md">API Reference</a>
+  </p>
 </div>
 
 ## Features
