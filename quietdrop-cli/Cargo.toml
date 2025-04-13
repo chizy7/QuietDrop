@@ -1,0 +1,10 @@
+[package]
+name = "quietdrop-cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+quietdrop-core = { path = "../quietdrop-core" }
+tokio = { version = "1.0", features = ["full", "rt-multi-thread"] }
+sodiumoxide = "0.2.7"
+chrono = { version = "0.4", features = ["serde"] }
