@@ -47,7 +47,10 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf libglib2.0-dev
+        # Find the correct webkit package
+        sudo apt-cache search webkit | grep dev
+        # Install the webkit2gtk-6.0 package instead
+        sudo apt-get install -y libgtk-3-dev webkit2gtk-driver libwebkit2gtk-6.0-dev libappindicator3-dev librsvg2-dev patchelf libglib2.0-dev
     
     - name: Install Trunk
       uses: jetli/trunk-action@v0.4.0
@@ -57,6 +60,10 @@ jobs:
     
     - name: Cache dependencies
       uses: Swatinem/rust-cache@v2
+    
+    - name: Fix test imports
+      run: |
+        find quietdrop-core/tests -type f -name "*.rs" -exec sed -i 's/use quietdrop::/use quietdrop_core::/g' {} \;
     
     - name: Build Tauri app
       working-directory: ./quietdrop-tauri
