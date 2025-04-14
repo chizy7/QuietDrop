@@ -8,7 +8,7 @@ on:
 
 jobs:
   build_core_and_cli:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -34,7 +34,7 @@ jobs:
       run: cargo clippy -p quietdrop-core -p quietdrop-cli -- -D warnings
 
   build_tauri:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
