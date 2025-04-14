@@ -67,7 +67,7 @@ fn main() {
                 sender: name.clone(),
                 recipient: "Bob".to_owned(),
                 content: vec![],
-                public_key: public_key,
+                public_key,
             };
             msg.encrypt_content(&msg_str, &server_public_key, &secret_key);
             rt.block_on(client::send_message(&msg, "127.0.0.1:8080"))

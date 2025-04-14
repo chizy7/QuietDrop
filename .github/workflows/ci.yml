@@ -23,8 +23,9 @@ jobs:
     
     - name: Fix Clippy warnings
       run: |
-        sed -i 's/public_key: public_key.clone()/public_key: public_key/g' quietdrop-cli/src/main.rs
-        sed -i 's/public_key: public_key.clone()/public_key: public_key/g' quietdrop-core/src/main.rs
+        # Fix redundant field names in struct initialization
+        sed -i 's/public_key: public_key,/public_key,/g' quietdrop-cli/src/main.rs
+        sed -i 's/public_key: public_key,/public_key,/g' quietdrop-core/src/main.rs
     
     - name: Build core library
       run: cargo build -p quietdrop-core
@@ -55,6 +56,7 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
+        # Install all necessary dependencies for Tauri on Ubuntu 22.04
         sudo apt-get install -y \
           libgtk-3-dev \
           libwebkit2gtk-4.0-dev \
@@ -63,7 +65,10 @@ jobs:
           patchelf \
           libglib2.0-dev \
           libjavascriptcoregtk-4.0-dev \
-          libsoup2.4-dev
+          libsoup2.4-dev \
+          libsoup-3.0-dev \
+          gir1.2-soup-3.0 \
+          libsoup-3.0-0
     
     - name: Install Trunk
       uses: jetli/trunk-action@v0.4.0
@@ -77,7 +82,7 @@ jobs:
     - name: Fix test imports and Clippy warnings
       run: |
         find quietdrop-core/tests -type f -name "*.rs" -exec sed -i 's/use quietdrop::/use quietdrop_core::/g' {} \;
-        sed -i 's/public_key: public_key.clone()/public_key: public_key/g' quietdrop-tauri/src/main.rs
+        sed -i 's/public_key: public_key,/public_key,/g' quietdrop-tauri/src-tauri/src/main.rs
     
     - name: Update Tauri bundle identifier
       run: |
