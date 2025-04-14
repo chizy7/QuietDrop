@@ -1,7 +1,7 @@
-use quietdrop::client;
-use quietdrop::encryption::generate_keypair;
-use quietdrop::message::{get_input, Message, MessageType};
-use quietdrop::server;
+use quietdrop_core::client;
+use quietdrop_core::encryption::generate_keypair;
+use quietdrop_core::message::{get_input, Message, MessageType};
+use quietdrop_core::server;
 use sodiumoxide::crypto::box_;
 use std::env;
 use std::fs::File;
@@ -67,7 +67,7 @@ fn main() {
                 sender: name.clone(),
                 recipient: "Bob".to_owned(),
                 content: vec![],
-                public_key: public_key.clone(),
+                public_key,
             };
             msg.encrypt_content(&msg_str, &server_public_key, &secret_key);
             rt.block_on(client::send_message(&msg, "127.0.0.1:8080"))

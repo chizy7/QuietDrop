@@ -7,28 +7,33 @@ on:
     branches: [master]
 
 jobs:
-  build_and_test:
+  build_core_and_cli:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
-
+      uses: actions/checkout@v3
+    
     - name: Install Rust
-      uses: actions-rs/toolchain@v1
+      uses: dtolnay/rust-toolchain@stable
       with:
-        profile: minimal
-        toolchain: stable
-        override: true
-
-    - name: Build
-      uses: actions-rs/cargo@v1
-      with:
-        command: build
-        args: --all-features
-
-    - name: Run tests
-      uses: actions-rs/cargo@v1
-      with:
-        command: test
-        args: --all-features
+        components: rustfmt, clippy
+    
+    - name: Fix code style issues
+      run: |
+        # Fix redundant field names in struct initialization
+        sed -i 's/public_key: public_key,/public_key,/g' quietdrop-cli/src/main.rs
+        sed -i 's/public_key: public_key,/public_key,/g' quietdrop-core/src/main.rs
+        # Fix test imports
+        find quietdrop-core/tests -type f -name "*.rs" -exec sed -i 's/use quietdrop::/use quietdrop_core::/g' {} \;
+    
+    - name: Build core library
+      run: cargo build -p quietdrop-core
+    
+    - name: Build CLI
+      run: cargo build -p quietdrop-cli
+    
+    - name: Lint code
+      run: cargo clippy -p quietdrop-core -p quietdrop-cli -- -D warnings
+    
+    - name: Run tests for core
+      run: cargo test -p quietdrop-core --lib

@@ -1,0 +1,13 @@
+[package]
+name = "quietdrop-tauri"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+yew = { version = "0.20", features = ["csr"] }
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+web-sys = { version = "0.3", features = ["HtmlInputElement", "console"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+gloo-utils = "0.1" 

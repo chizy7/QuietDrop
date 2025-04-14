@@ -1,5 +1,5 @@
 use argon2::{password_hash::SaltString, Algorithm, Argon2, Params, PasswordHasher, Version};
-use quietdrop::authentication;
+use quietdrop_core::authentication;
 use rand::rngs::OsRng;
 use std::fs::File;
 use std::io::{Read, Write};
