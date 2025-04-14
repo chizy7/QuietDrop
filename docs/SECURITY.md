@@ -46,13 +46,37 @@ If you have suggestions on how this process could be improved, please submit a p
 
 Security updates will be released as part of normal version releases unless an urgent fix is required. In that case, a security patch release will be issued.
 
+## Desktop Application Security
+
+With the migration to Tauri, additional security considerations apply to the desktop application:
+
+### Tauri Security Features
+
+1. **Process Isolation**: The frontend (WebView) and backend (Rust) run in separate processes, providing an additional security boundary
+2. **Restricted File System Access**: The WebView has no direct access to the file system; all access is mediated through Tauri APIs
+3. **CSP Enforcement**: Content Security Policy is enforced to prevent XSS and other web-based attacks
+4. **Custom Protocol**: A custom protocol is used to communicate between the frontend and backend
+5. **Permission System**: Tauri provides a permission system for controlling access to system resources
+
+### Additional Measures for Desktop Security
+
+1. **Configuration Hardening**: The default Tauri configuration has been hardened to limit attack surface
+2. **Update Security**: The application update process is cryptographically verified
+3. **Local Storage Encryption**: Sensitive data stored locally is encrypted using platform-specific mechanisms
+4. **Memory Protection**: Sensitive data in memory is properly handled to minimize exposure
+5. **Keychain Integration**: Where available, platform keychains are used for storing secrets
+
 ## Security-Related Configuration
 
 QuietDrop has been designed with security as a priority. Here are some recommendations for secure deployment:
 
 1. Always keep your QuietDrop installation updated to the latest version
 2. Use strong, unique passwords for authentication
-3. Ensure server deployments are properly secured with appropriate firewall rules
+3. For server deployments, ensure proper firewall rules are in place
+4. For desktop application:
+   - Verify the integrity of downloaded installer packages
+   - Keep your operating system and security software up to date
+   - Enable disk encryption on your device
 
 ## Known Security Gaps & Future Enhancements
 
@@ -60,21 +84,37 @@ We are transparent about the current security limitations of QuietDrop:
 
 - The current key exchange mechanism is simplified and will be enhanced in future releases
 - Message metadata (sender, timestamp) is currently not encrypted
-- (Add any other known limitations here)
+- Tauri's permission system could be further strengthened for more granular control
+- The desktop application currently lacks automatic security updates
+- File attachments are not yet implemented with proper content verification
 
 Our security roadmap includes:
+
 - Implementing the Double Ratchet Algorithm for improved forward secrecy
 - Adding support for out-of-band key verification
 - Encrypting message metadata for enhanced privacy
+- Implementing automatic security updates for the desktop application
+- Adding secure file attachment handling with content verification
 - Regular security audits of the codebase
+- Implementing certificate pinning for communication with update servers
+
+## Tauri-Specific Security Recommendations
+
+When using the Tauri desktop application:
+
+1. **Custom Protocol Handling**: Be cautious of custom URL handlers; only interact with `quietdrop://` URLs from trusted sources
+2. **External Links**: External links will open in your default browser, not within the application
+3. **Updates**: Only download updates through the application's built-in update mechanism
+4. **Development Mode**: Do not use development builds in production environments
 
 ## Security Expectations for Dependencies
 
-QuietDrop relies on several third-party libraries. We make an effort to:
+QuietDrop relies on several third-party libraries and frameworks. We make an effort to:
 
 1. Only include dependencies that are actively maintained
 2. Regularly update dependencies to incorporate security fixes
 3. Evaluate dependencies for security concerns before inclusion
+4. Monitor security advisories for all dependencies
 
 ## Contact
 

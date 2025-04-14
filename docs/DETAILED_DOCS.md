@@ -2,45 +2,66 @@
 
 ## Overview
 
-QuietDrop is an end-to-end encrypted chat application built in Rust. It prioritizes security, privacy, and performance while providing a simple communication platform.
+QuietDrop is an end-to-end encrypted messaging application built in Rust. It prioritizes security, privacy, and performance while providing both command-line and cross-platform graphical user interfaces.
 
 ## Architecture
 
 ### Current Implementation
 
-QuietDrop follows a client-server architecture:
+QuietDrop has been refactored to use a modular workspace architecture with Tauri 2.0 for cross-platform integration:
 
-```
-┌─────────┐                ┌─────────┐
-│         │◄──Encrypted──►│         │
-│ Client  │    Messages    │ Server  │
-│         │                │         │
-└─────────┘                └─────────┘
+```mermaid
+graph TD
+    subgraph "QuietDrop Workspace"
+        subgraph "quietdrop-core"
+            A[Authentication Module] --> Core[Core Library]
+            E[Encryption Module] --> Core
+            M[Message Module] --> Core
+            C[Client Module] --> Core
+            S[Server Module] --> Core
+        end
+        
+        subgraph "quietdrop-cli"
+            CLI[Command Line Interface] --> Core
+        end
+        
+        subgraph "quietdrop-tauri"
+            subgraph "Frontend (Yew)"
+                Y[Yew Components] --> WASM[WebAssembly]
+            end
+            
+            subgraph "Tauri 2.0 Backend"
+                T[Tauri Commands] --> Core
+                T --> P[Platform APIs]
+            end
+            
+            WASM <--> T
+            P --> DesktopAPI[Desktop APIs]
+            P --> MobileAPI[Mobile APIs]
+        end
+    end
+    
+    DesktopAPI --> Desktop[Windows/macOS/Linux]
+    MobileAPI --> Mobile[Android/iOS]
 ```
 
 The system consists of the following components:
 
-1. **Authentication Module** (`authentication.rs`)
-   - Handles password hashing and verification using Argon2
-   - Manages salt generation and storage
+1. **Core Library** (`quietdrop-core`)
+   - Contains all business logic and cryptographic operations
+   - Provides a pure Rust API for other components
+   - Maintains the original security and messaging functionality
 
-2. **Encryption Module** (`encryption.rs`)
-   - Uses libsodium (via sodiumoxide) for cryptographic operations
-   - Implements public-key encryption with the NaCl crypto_box
-   - Handles key pair generation and message encryption/decryption
+2. **Command Line Interface** (`quietdrop-cli`)
+   - Preserves the original CLI functionality
+   - Provides server and client modes
+   - Uses the core library for all operations
 
-3. **Client Module** (`client.rs`)
-   - Manages connection to the server
-   - Handles sending encrypted messages
-
-4. **Server Module** (`server.rs`)
-   - Listens for incoming connections
-   - Processes and decrypts received messages
-   - Includes basic rate limiting functionality
-
-5. **Message Module** (`message.rs`)
-   - Defines message structure and types
-   - Provides utility functions for message handling
+3. **Cross-Platform Application** (`quietdrop-tauri`)
+   - **Frontend**: Built with Yew, a Rust framework that compiles to WebAssembly
+   - **Backend**: Tauri 2.0 shell that bridges the frontend with core library
+   - **Platform Support**: Unified codebase for desktop and mobile platforms
+   - Provides a modern GUI while maintaining security
 
 ### Data Flow
 
@@ -55,6 +76,13 @@ The system consists of the following components:
 
 3. **Message Decryption**:
    - The server decrypts messages using the client's public key and its own secret key
+
+4. **Cross-Platform UI Flow**:
+   - User input is captured in the Yew frontend
+   - Actions are sent to the Tauri backend via commands
+   - Tauri backend uses the core library to perform operations
+   - Results are returned to the frontend for display
+   - Platform-specific APIs are used when needed (mobile vs desktop)
 
 ## Security Features
 
@@ -73,6 +101,12 @@ User passwords are secured using:
 - **Hashing Algorithm**: Argon2id (memory-hard function)
 - **Parameterization**: Configurable memory, iterations, and parallelism parameters
 - **Salt**: Randomly generated and stored separately
+
+### Platform Security
+
+- **Desktop**: Process isolation, controlled API access, custom IPC protocol
+- **Mobile**: Platform sandboxing, permission-based security model
+- **Shared**: E2E encryption for all communications
 
 ## Core Components
 
@@ -118,8 +152,10 @@ pub struct Message {
 
 ### Prerequisites
 
-- Rust 1.54.0 or newer
+- Rust 1.70.0 or newer
 - Cargo package manager
+- System dependencies for Tauri (see [Tauri prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites/))
+- For mobile development, additional mobile SDK dependencies
 
 ### Building From Source
 
@@ -129,17 +165,37 @@ pub struct Message {
    cd QuietDrop
    ```
 
-2. Build the project:
+2. Build the core library and CLI:
    ```bash
-   cargo build --release
+   cargo build --workspace
    ```
 
-### Running the Server
+3. Build the cross-platform application:
+
+   **For Desktop:**
+   ```bash
+   cd quietdrop-tauri
+   cargo tauri build
+   ```
+
+   **For Android:**
+   ```bash
+   cd quietdrop-tauri
+   cargo tauri android build
+   ```
+
+   **For iOS:**
+   ```bash
+   cd quietdrop-tauri
+   cargo tauri ios build
+   ```
+
+### Running the CLI
 
 Run the server component:
 
 ```bash
-cargo run server
+cargo run -p quietdrop-cli -- server
 ```
 
 This will:
@@ -147,93 +203,148 @@ This will:
 - Save the public and secret keys to `server_public_key.key` and `server_secret_key.key`
 - Start listening for connections on `127.0.0.1:8080`
 
-### Running the Client
-
 In a separate terminal, run the client:
 
 ```bash
-cargo run client
+cargo run -p quietdrop-cli -- client
 ```
 
-This will:
-- Generate a client keypair
-- Read the server's public key
-- Prompt for a name and message
-- Encrypt and send the message to the server
+### Running the Cross-Platform Application
+
+For development:
+
+```bash
+# Desktop
+cd quietdrop-tauri
+cargo tauri dev
+
+# Android
+cd quietdrop-tauri
+cargo tauri android dev
+
+# iOS
+cd quietdrop-tauri
+cargo tauri ios dev
+```
+
+To run the built application:
+
+```bash
+# Desktop - After building
+./target/release/quietdrop-tauri
+
+# Mobile - Install the APK or app on your device
+```
+
+## Project Structure
+
+The project is now organized as a Rust workspace with multiple crates:
+
+```
+quietdrop/
+├── Cargo.toml                # Workspace manifest
+├── quietdrop-core/           # Core library with shared functionality
+│   ├── src/                  # Source files
+│   │   ├── encryption.rs     # Encryption logic
+│   │   ├── message.rs        # Message handling
+│   │   ├── client.rs         # Client operations
+│   │   ├── server.rs         # Server operations
+│   │   ├── authentication.rs # Authentication
+│   │   └── lib.rs            # Library exports
+│   └── tests/                # Integration tests
+├── quietdrop-cli/            # Command-line interface
+│   ├── src/
+│   │   └── main.rs           # CLI entry point
+│   └── Cargo.toml
+└── quietdrop-tauri/          # Tauri cross-platform application
+    ├── Cargo.toml            # Frontend dependencies
+    ├── index.html            # HTML entry point
+    ├── styles.css            # CSS styles
+    ├── src/                  # Yew frontend
+    │   ├── main.rs           # Frontend entry point
+    │   ├── components/       # UI components
+    │   ├── services/         # Service interfaces
+    │   └── models/           # Data models
+    └── src-tauri/            # Tauri backend
+        ├── src/
+        │   └── main.rs       # Tauri command handlers
+        ├── Cargo.toml
+        └── tauri.conf.json   # Tauri configuration
+```
 
 ## Development Workflow
 
-### Code Organization
+### Workspace Development
 
-- **Source Files**: All Rust source files are in the `src` directory
-- **Documentation**: Located in the `documentation` directory
-- **Build Artifacts**: Generated in the `target` directory (not tracked in git)
+- **Core Library**: Make changes to the core library to update functionality across all interfaces
+- **CLI**: Update the command-line interface for terminal users
+- **Tauri App**: Develop the cross-platform application with Yew and Tauri
 
-### Project Structure
+### Running Tests
 
-```
-QuietDrop/
-├── Cargo.lock          - Lock file for dependencies
-├── Cargo.toml          - Project configuration
-├── src/                - Source code
-│   ├── authentication.rs  - Authentication functionality
-│   ├── client.rs       - Client implementation
-│   ├── encryption.rs   - Encryption operations
-│   ├── lib.rs          - Library exports
-│   ├── main.rs         - Application entry point
-│   ├── message.rs      - Message handling
-│   └── server.rs       - Server implementation
-├── documentation/      - Project documentation
-└── README.md           - Project overview
+```bash
+# Run all tests in the workspace
+cargo test --workspace
+
+# Run tests for a specific crate
+cargo test -p quietdrop-core
 ```
 
-### Coding Standards
+### Frontend Development
 
-- Follow Rust style conventions using `rustfmt`
-- Run `cargo fmt` before committing changes
-- Use `cargo clippy` for linting
-- Write meaningful commit messages
+The frontend is built with Yew, a Rust framework that compiles to WebAssembly:
+
+1. Make changes to components in `quietdrop-tauri/src/`
+2. Test responsiveness for both desktop and mobile interfaces
+3. Use conditional rendering for platform-specific UI elements
+4. Consider touch interfaces for mobile and pointer interfaces for desktop
+
+### Backend Development
+
+The Tauri backend connects the frontend to the core library:
+
+1. Define command handlers in `quietdrop-tauri/src-tauri/src/main.rs`
+2. Use conditional compilation for platform-specific features
+3. Implement proper error handling and state management
+4. Consider resource constraints on mobile devices
+
+### Cross-Platform Considerations
+
+- **UI Adaptation**: Adjust layouts for different screen sizes and input methods
+- **Platform Detection**: Use Tauri's platform detection APIs
+- **Resource Usage**: Be mindful of resource constraints on mobile devices
+- **Permission Handling**: Implement proper permission requests for different platforms
 
 ## Contributing
 
 We welcome contributions! Here's how to get started:
 
-1. **Pick an Issue**: Check the GitHub issues for tasks to work on
-2. **Fork the Repository**: Create your own fork of the project
-3. **Create a Branch**: Make your changes in a new branch
-4. **Make Changes**: Implement your feature or fix
-5. **Run Tests**: Ensure all tests pass with `cargo test`
-6. **Format Code**: Run `cargo fmt` to format your code
-7. **Submit a PR**: Open a pull request with your changes
+1. **Set Up Development Environment**:
+   - Install Rust and Cargo
+   - Install Tauri prerequisites
+   - For mobile development, set up Android/iOS build environments
 
-### Development Environment Setup
+2. **Fork and Clone**: 
+   - Fork the repository on GitHub
+   - Clone your fork locally
 
-1. Install the Rust toolchain:
-   ```bash
-   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-   ```
+3. **Branch and Develop**:
+   - Create a branch for your feature
+   - Make changes following our coding standards
+   - Test on relevant platforms (desktop/mobile)
 
-2. Install development tools:
-   ```bash
-   rustup component add rustfmt clippy
-   ```
-
-3. Set up Git hooks (recommended):
-   ```bash
-   # Create a pre-commit hook for formatting
-   echo '#!/bin/sh
-   cargo fmt -- --check
-   cargo clippy -- -D warnings' > .git/hooks/pre-commit
-   chmod +x .git/hooks/pre-commit
-   ```
+4. **Submit a PR**:
+   - Open a pull request with your changes
+   - Ensure CI checks pass
+   - Provide testing information for platform-specific features
 
 ## Future Plans
 
-See the [Project Roadmap](PROJECT_ROADMAP.md) for detailed information about:
-- Immediate development goals
-- Short-term features
-- Long-term roadmap
-- Technical debt items
+- **SQLite Integration**: Add database persistence for messages and user data
+- **Group Chat**: Implement secure group messaging
+- **File Transfer**: Add encrypted file sharing capabilities
+- **Push Notifications**: Implement secure push notifications for mobile
+- **Offline Mode**: Enhance offline capabilities
 
 ## License
 
