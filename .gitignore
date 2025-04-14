@@ -4,3 +4,4 @@
 Cargo.lock
 *.key
 .DS_Store
+.vscode/

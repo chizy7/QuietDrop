@@ -79,57 +79,62 @@ The decryption process:
 3. Decrypts the message using the sender's public key and recipient's secret key
 4. Converts the decrypted bytes to a UTF-8 string
 
-## Current Implementation Flow
+## Implementation Flow in Tauri Architecture
 
-### Server Setup
-```
-┌─────────────┐
-│ Generate    │
-│ Server      │
-│ Keypair     │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Save Keys   │
-│ to Disk     │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Listen for  │
-│ Connections │
-└─────────────┘
-```
+The refactored architecture maintains the same encryption principles but integrates them with the Tauri desktop application:
 
-### Message Sending (Client to Server)
-```
-┌─────────────┐      ┌─────────────┐      ┌─────────────┐
-│ Generate    │      │ Load Server │      │ Create      │
-│ Client      │─────►│ Public Key  │─────►│ Message     │
-│ Keypair     │      │ from Disk   │      │ Object      │
-└─────────────┘      └─────────────┘      └──────┬──────┘
-                                                  │
-                                                  ▼
-┌─────────────┐      ┌─────────────┐      ┌─────────────┐
-│ Send to     │◄─────│ Serialize   │◄─────│ Encrypt     │
-│ Server      │      │ Message     │      │ Message     │
-└─────────────┘      └─────────────┘      └─────────────┘
+```mermaid
+graph TD
+    subgraph "Desktop Application"
+        F[Frontend - Yew/WebAssembly] -->|User Input| T[Tauri Commands]
+        T -->|API Calls| C[quietdrop-core]
+        C -->|Encryption API| E[Encryption Module]
+        E -->|Results| C
+        C -->|Response| T
+        T -->|UI Update| F
+    end
+    
+    subgraph "CLI Application"
+        CLI[Command Line Interface] -->|Direct API| C
+    end
+    
+    subgraph "Encryption Process"
+        KG[Generate Keys] -->|KeyPair| EM[Encrypt Message]
+        EM -->|Encrypted Data| DM[Decrypt Message]
+    end
 ```
 
-### Message Reception (Server Side)
-```
-┌─────────────┐      ┌─────────────┐      ┌─────────────┐
-│ Receive     │      │ Deserialize │      │ Extract     │
-│ Encrypted   │─────►│ to Message  │─────►│ Sender's    │
-│ Data        │      │ Object      │      │ Public Key  │
-└─────────────┘      └─────────────┘      └──────┬──────┘
-                                                  │
-                                                  ▼
-┌─────────────┐      ┌─────────────┐      ┌─────────────┐
-│ Process     │◄─────│ Validate    │◄─────│ Decrypt     │
-│ Message     │      │ Message     │      │ Content     │
-└─────────────┘      └─────────────┘      └─────────────┘
+### Key Storage in Tauri
+
+In the Tauri application, keys are managed through:
+
+1. **Memory Storage**: During application runtime, keys are stored in memory using Tauri's state management
+2. **Secure Storage**: For persistence, keys are stored using Tauri's secure storage API, which leverages platform-specific mechanisms:
+   - Windows: Windows Data Protection API
+   - macOS: Keychain
+   - Linux: libsecret
+
+### Desktop App Encryption Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant UI as Yew Frontend
+    participant Tauri as Tauri Backend
+    participant Core as quietdrop-core
+    participant Server
+    
+    User->>UI: Enter message
+    UI->>Tauri: Send message
+    Tauri->>Core: Call encryption API
+    Core->>Core: Generate keypair if needed
+    Core->>Core: Encrypt message
+    Core->>Server: Send encrypted message
+    Server->>Server: Decrypt & process
+    Server-->>Core: Acknowledge
+    Core-->>Tauri: Return result
+    Tauri-->>UI: Update interface
+    UI-->>User: Display confirmation
 ```
 
 ## Security Considerations
@@ -141,12 +146,19 @@ The decryption process:
 3. **Perfect Forward Secrecy**: While the underlying crypto provides PFS capabilities, the current implementation doesn't fully utilize this
 4. **Metadata Protection**: Message metadata (sender, recipient, timestamp) is not encrypted
 
+### New Considerations with Tauri
+
+1. **Frontend-Backend Boundary**: Messages crossing the WebAssembly boundary need protection
+2. **Local Storage Security**: Keys stored on the local device require platform-specific security
+3. **Application Updates**: Security of the update process for the desktop application
+
 ### Planned Improvements
 
 1. **Double Ratchet Algorithm**: Implement the Signal Protocol's Double Ratchet for improved forward secrecy
 2. **Key Management**: Create a secure and user-friendly key management system
 3. **Metadata Protection**: Encrypt metadata to protect communication patterns
 4. **Key Verification**: Add support for out-of-band key verification
+5. **Secure Update Channel**: Implement signed updates for the desktop application
 
 ## Testing Encryption
 
@@ -202,6 +214,42 @@ mod tests {
 }
 ```
 
+## Testing Tauri Integration
+
+```rust
+// Example test for Tauri command that uses encryption
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tauri::State;
+
+    #[test]
+    fn test_send_message_command() {
+        // Mock app state
+        let app_state = AppState {
+            keys: Mutex::new(Some((generate_keypair()))),
+            // Other state...
+        };
+
+        // Create a test message
+        let message_req = MessageRequest {
+            content: "Test message".to_string(),
+            recipient: "Test recipient".to_string(),
+            // Other fields...
+        };
+
+        // Execute command in a runtime
+        let rt = tokio::runtime::Runtime::new().unwrap();
+        let result = rt.block_on(async {
+            send_message(State::new(app_state), message_req).await
+        });
+
+        // Verify the result
+        assert!(result.is_ok());
+    }
+}
+```
+
 ## Best Practices for Contributors
 
 When modifying the encryption code:
@@ -212,6 +260,7 @@ When modifying the encryption code:
 4. **Document Security Implications**: Comment on the security properties of your changes
 5. **Consider Side-Channel Attacks**: Be mindful of timing attacks and other side channels
 6. **Follow Memory Safety Practices**: Securely handle sensitive data in memory
+7. **Respect the WebAssembly Boundary**: Be careful about what data crosses between the frontend and backend
 
 ## Glossary
 
@@ -220,3 +269,5 @@ When modifying the encryption code:
 - **Nonce**: "Number used once" - a random value to ensure unique encryption results
 - **Authentication**: Verifying the identity of the sender
 - **Forward Secrecy**: Protection of past communications even if keys are compromised
+- **WebAssembly**: Binary instruction format used for the frontend
+- **Tauri**: Framework for building desktop applications with web technologies and Rust
