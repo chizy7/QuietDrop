@@ -72,7 +72,7 @@ async fn send_message(
         sender: message_req.name,
         recipient: message_req.recipient,
         content: vec![],
-        public_key: public_key.clone(),
+        public_key,
     };
 
     println!("Encrypting message...");
