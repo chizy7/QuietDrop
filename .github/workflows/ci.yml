@@ -7,28 +7,61 @@ on:
     branches: [master]
 
 jobs:
-  build_and_test:
+  build_core_and_cli:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
-
+      uses: actions/checkout@v3
+    
     - name: Install Rust
-      uses: actions-rs/toolchain@v1
+      uses: dtolnay/rust-toolchain@stable
       with:
-        profile: minimal
-        toolchain: stable
-        override: true
+        components: rustfmt, clippy
+    
+    - name: Cache dependencies
+      uses: Swatinem/rust-cache@v2
+    
+    - name: Build core library
+      run: cargo build -p quietdrop-core
+    
+    - name: Build CLI
+      run: cargo build -p quietdrop-cli
+    
+    - name: Run tests for core
+      run: cargo test -p quietdrop-core --lib
+    
+    - name: Lint code
+      run: cargo clippy -p quietdrop-core -p quietdrop-cli -- -D warnings
 
-    - name: Build
-      uses: actions-rs/cargo@v1
+  build_tauri:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
       with:
-        command: build
-        args: --all-features
-
-    - name: Run tests
-      uses: actions-rs/cargo@v1
-      with:
-        command: test
-        args: --all-features
+        targets: wasm32-unknown-unknown
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf libglib2.0-dev
+    
+    - name: Install Trunk
+      uses: jetli/trunk-action@v0.4.0
+    
+    - name: Install Tauri CLI
+      run: cargo install tauri-cli --version "^2.0.0-alpha"
+    
+    - name: Cache dependencies
+      uses: Swatinem/rust-cache@v2
+    
+    - name: Build Tauri app
+      working-directory: ./quietdrop-tauri
+      run: |
+        # Build the frontend first
+        trunk build
+        # Then build the Tauri app
+        cargo tauri build
