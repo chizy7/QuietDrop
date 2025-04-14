@@ -42,7 +42,7 @@ jobs:
       run: cargo clippy -p quietdrop-core -p quietdrop-cli -- -D warnings
 
   build_tauri:
-    runs-on: ubuntu-22.04  # Use Ubuntu 22.04 LTS instead of latest
+    runs-on: ubuntu-22.04  # Use Ubuntu 22.04 LTS
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -70,6 +70,10 @@ jobs:
       run: |
         find quietdrop-core/tests -type f -name "*.rs" -exec sed -i 's/use quietdrop::/use quietdrop_core::/g' {} \;
         sed -i 's/public_key: public_key.clone()/public_key: public_key/g' quietdrop-tauri/src/main.rs
+    
+    - name: Update Tauri bundle identifier
+      run: |
+        sed -i 's/"identifier": "com.tauri.dev"/"identifier": "com.quietdrop.app"/g' quietdrop-tauri/src-tauri/tauri.conf.json
     
     - name: Build Tauri app
       working-directory: ./quietdrop-tauri
