@@ -2,8 +2,8 @@
 members = [
     "quietdrop-core",
     "quietdrop-cli", 
-    "quietdrop-ui",
-    "quietdrop-ui/src-tauri"
+    "quietdrop-tauri",
+    "quietdrop-tauri/src-tauri"
 ]
 
 resolver = "2"

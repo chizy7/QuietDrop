@@ -1,7 +1,7 @@
-use quietdrop::client;
-use quietdrop::encryption::generate_keypair;
-use quietdrop::message::{get_input, Message, MessageType};
-use quietdrop::server;
+use quietdrop_core::client;
+use quietdrop_core::encryption::generate_keypair;
+use quietdrop_core::message::{get_input, Message, MessageType};
+use quietdrop_core::server;
 use sodiumoxide::crypto::box_;
 use std::env;
 use std::fs::File;

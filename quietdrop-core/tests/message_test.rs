@@ -1,6 +1,6 @@
 use chrono::Utc;
-use quietdrop::encryption::generate_keypair;
-use quietdrop::message::{Message, MessageType};
+use quietdrop_core::encryption::generate_keypair;
+use quietdrop_core::message::{Message, MessageType};
 use serde_json;
 
 #[test]

@@ -3,15 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <title>QuietDrop</title>
-    <link rel="stylesheet" href="/main-13311e48d98682bd.css" integrity="sha384-WTuNL6RzLLfIPfEzhLtDAStQsclrZSlPEa6NPaD2op8w613UQLF9ofpizu/AC7TZ"/>
-    <!-- <link data-trunk rel="copy-dir" href="public" /> -->
-<link rel="modulepreload" href="/quietdrop-frontend-aa25df36ef129f22.js" crossorigin="anonymous" integrity="sha384-HxrMGnwEc+xfrysZwxYBNJif103BDYGWyvrlIr1Fa6S2LEmVXtFYQGvZuiUf2/DR"><link rel="preload" href="/quietdrop-frontend-aa25df36ef129f22_bg.wasm" crossorigin="anonymous" integrity="sha384-kQiSc67TJHsyb93nQextANINoNUvPWx67BGGEAPrz9+yFf3B89C1C/hNqjjdKnos" as="fetch" type="application/wasm"></head>
+    <link rel="stylesheet" href="/styles-679d194d49f6edca.css" integrity="sha384-l2zb3fBnTTHLqVWoOYI6F/VDzjdARGCx4N4bw/DP4+IJnjWty1EvcSI82tsSy3F0"/>
+<link rel="modulepreload" href="/quietdrop-tauri-16af60ac76bb525f.js" crossorigin="anonymous" integrity="sha384-corDXrFIVrlTbuemunUFNZ8YpoI48N8KzNB5COdTpYGDJt0qCbK41PPZBLTzP3dY"><link rel="preload" href="/quietdrop-tauri-16af60ac76bb525f_bg.wasm" crossorigin="anonymous" integrity="sha384-F5u4OW/g7xgYs9exEokfH6plywRnqiIhhxi60p6kHWpWL0SOLfmZIc6byvIR3zRG" as="fetch" type="application/wasm"></head>
 <body>
     <div id="app"></div>
 
 <script type="module">
-import init, * as bindings from '/quietdrop-frontend-aa25df36ef129f22.js';
-const wasm = await init('/quietdrop-frontend-aa25df36ef129f22_bg.wasm');
+import init, * as bindings from '/quietdrop-tauri-16af60ac76bb525f.js';
+const wasm = await init('/quietdrop-tauri-16af60ac76bb525f_bg.wasm');
 
 
 window.wasmBindings = bindings;

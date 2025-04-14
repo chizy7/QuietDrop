@@ -1,4 +1,4 @@
-use quietdrop::encryption::{decrypt_message, encrypt_message, generate_keypair};
+use quietdrop_core::encryption::{decrypt_message, encrypt_message, generate_keypair};
 
 #[test]
 fn test_end_to_end_encryption() {
