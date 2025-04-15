@@ -6,12 +6,11 @@
   </picture>
   <h1>QuietDrop: End-to-End Encrypted Messaging in Rust</h1>
   <p>
-    <a href="https://github.com/chizy7/QuietDrop/actions"><img src="https://img.shields.io/github/actions/workflow/status/chizy7/QuietDrop/ci.yml?branch=main&style=flat-square&label=build" alt="Build Status"></a>
-    <a href="https://github.com/chizy7/QuietDrop/blob/main/LICENSE"><img src="https://img.shields.io/github/license/chizy7/QuietDrop?style=flat-square" alt="License"></a>
+    <a href="https://github.com/chizy7/QuietDrop/actions"><img src="https://img.shields.io/github/actions/workflow/status/chizy7/QuietDrop/ci.yml?branch=master&style=flat-square&label=build" alt="Build Status"></a>
+    <a href="https://github.com/chizy7/QuietDrop/blob/master/LICENSE"><img src="https://img.shields.io/github/license/chizy7/QuietDrop?style=flat-square" alt="License"></a>
     <a href="https://github.com/chizy7/QuietDrop"><img src="https://img.shields.io/github/forks/chizy7/QuietDrop?style=flat-square" alt="GitHub Forks"></a>
     <a href="https://github.com/chizy7/QuietDrop/stargazers"><img src="https://img.shields.io/github/stars/chizy7/QuietDrop?style=flat-square" alt="GitHub Stars"></a>
     <a href="CODE_OF_CONDUCT.md"><img src="https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg" alt="Contributor Covenant"></a>
-    <a href="https://github.com/chizy7/QuietDrop/pulls"><img src="https://img.shields.io/coderabbit/prs/github/chizy7/QuietDrop" alt="CodeRabbit Pull Request Reviews"></a>
     <a href="https://tauri.app"><img src="https://img.shields.io/badge/Tauri-2.x-blue?style=flat-square" alt="Tauri"></a>
     <a href="https://yew.rs"><img src="https://img.shields.io/badge/Yew-0.20-orange?style=flat-square" alt="Yew"></a>
     <a href="https://www.rust-lang.org"><img src="https://img.shields.io/badge/Rust-1.70%2B-dea584?style=flat-square" alt="Rust"></a>
