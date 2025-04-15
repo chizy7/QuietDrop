@@ -30,7 +30,7 @@ The build process involves compiling Rust code, compiling WebAssembly for the fr
 
 - **Rust** (1.70.0 or newer)
 - **Cargo** (comes with Rust)
-- **Node.js** (16.0.0 or newer, for Tauri)
+- **Node.js** (for Tauri's build system, not for application code)
 - **Platform-specific dependencies** (detailed below)
 
 ### Platform-specific Dependencies
@@ -219,66 +219,22 @@ The output includes:
 
 ### Customizing the Packaging
 
-Customize packaging in `src-tauri/tauri.conf.json`:
+Customize packaging in `src-tauri/tauri.conf.json`. Below is an example based on your provided configuration:
 
 ```json
 {
-  "package": {
-    "productName": "QuietDrop",
-    "version": "0.1.0"
-  },
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "QuietDrop",
+  "version": "0.1.0",
+  "identifier": "com.quietdrop.app",
   "build": {
-    "distDir": "../dist",
-    "devPath": "http://localhost:1420",
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420",
     "beforeDevCommand": "",
     "beforeBuildCommand": "",
     "withGlobalTauri": true
   },
-  "tauri": {
-    "bundle": {
-      "active": true,
-      "category": "Utility",
-      "copyright": "",
-      "deb": {
-        "depends": []
-      },
-      "externalBin": [],
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
-      "identifier": "com.quietdrop.app",
-      "longDescription": "End-to-End Encrypted Messaging Application",
-      "macOS": {
-        "entitlements": null,
-        "exceptionDomain": "",
-        "frameworks": [],
-        "providerShortName": null,
-        "signingIdentity": null
-      },
-      "resources": [],
-      "shortDescription": "Secure Messaging App",
-      "targets": ["deb", "appimage", "msi", "app", "dmg", "updater"],
-      "windows": {
-        "certificateThumbprint": null,
-        "digestAlgorithm": "sha256",
-        "timestampUrl": ""
-      }
-    },
-    "security": {
-      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'"
-    },
-    "updater": {
-      "active": true,
-      "endpoints": [
-        "https://releases.quietdrop.com/{{target}}/{{current_version}}"
-      ],
-      "dialog": true,
-      "pubkey": ""
-    },
+  "app": {
     "windows": [
       {
         "title": "QuietDrop",
@@ -288,66 +244,70 @@ Customize packaging in `src-tauri/tauri.conf.json`:
         "fullscreen": false
       }
     ],
-    "android": {
-      "package": "com.quietdrop.app",
-      "versionCode": 1,
-      "minSdkVersion": 24,
-      "targetSdkVersion": 33
-    },
-    "ios": {
-      "developmentTeam": "YOUR_TEAM_ID",
-      "minimumOSVersion": "13.0"
+    "security": {
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'"
     }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "category": "Utility",
+    "copyright": "",
+    "deb": {
+      "depends": []
+    },
+    "externalBin": [],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "longDescription": "End-to-End Encrypted Messaging Application",
+    "macOS": {
+      "entitlements": null,
+      "exceptionDomain": "",
+      "frameworks": [],
+      "providerShortName": null,
+      "signingIdentity": null
+    },
+    "resources": [],
+    "shortDescription": "Secure Messaging App",
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
+    }
+  },
+  "updater": {
+    "active": true,
+    "endpoints": [
+      "https://releases.quietdrop.com/{{target}}/{{current_version}}"
+    ],
+    "dialog": true,
+    "pubkey": ""
+  },
+  "android": {
+    "package": "com.quietdrop.app",
+    "versionCode": 1,
+    "minSdkVersion": 24,
+    "targetSdkVersion": 33
+  },
+  "ios": {
+    "developmentTeam": "TEAM_ID",
+    "minimumOSVersion": "13.0"
   }
 }
 ```
 
-### Mobile-Specific Configuration
+### Android Configuration
 
-#### Android Configuration
+Additional Android configurations can be added to the Android project after initial setup.
 
-Additional Android configurations can be set in `gen/android/app/build.gradle` after initial setup:
+### iOS Configuration
 
-```gradle
-android {
-    // ...
-    
-    defaultConfig {
-        // ...
-        versionCode 1
-        versionName "1.0.0"
-        
-        // Enable multidex support if needed
-        multiDexEnabled true
-    }
-    
-    signingConfigs {
-        release {
-            storeFile file("keystore.jks")
-            storePassword System.getenv("KEYSTORE_PASSWORD")
-            keyAlias System.getenv("KEY_ALIAS")
-            keyPassword System.getenv("KEY_PASSWORD")
-        }
-    }
-    
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
-        }
-    }
-}
-```
-
-#### iOS Configuration
-
-Additional iOS configurations can be set in `gen/ios/App/App.xcodeproj/project.pbxproj` or through Xcode:
-
-1. Open the generated Xcode project
-2. Configure signing certificates
-3. Set app capabilities (e.g., Push Notifications, Background Modes)
-4. Configure privacy descriptions in `Info.plist`
+Additional iOS configurations can be set in the Xcode project after initial setup.
 
 ## Continuous Integration
 
@@ -387,17 +347,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.0-dev build-essential libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
       
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
+      
       - name: Build desktop app
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           projectPath: ./quietdrop-tauri
-          tagName: v__VERSION__
-          releaseName: "QuietDrop v__VERSION__"
-          releaseBody: "See the assets to download the installer for your platform."
-          releaseDraft: true
-          prerelease: false
           
   build-android:
     runs-on: ubuntu-latest
@@ -455,27 +415,12 @@ jobs:
 
 ### Version Management
 
-1. Update version in `Cargo.toml` files:
-   ```toml
-   # quietdrop-core/Cargo.toml
-   [package]
-   name = "quietdrop-core"
-   version = "0.1.0"  # Update this
-   ```
-
-2. Update version in `tauri.conf.json`:
-   ```json
-   {
-     "package": {
-       "version": "0.1.0"  # Update this
-     },
-     "tauri": {
-       "android": {
-         "versionCode": 1  # Increment this for Android
-       }
-     }
-   }
-   ```
+Update version in `tauri.conf.json`:
+```json
+{
+  "version": "0.1.0"
+}
+```
 
 ### Creating a Release
 
@@ -493,55 +438,13 @@ jobs:
 
 ### Desktop Update Mechanism
 
-QuietDrop uses Tauri's built-in updater for automatic updates for desktop applications:
-
-#### Updater Configuration
-
-Configure in `tauri.conf.json`:
-
-```json
-"updater": {
-  "active": true,
-  "endpoints": [
-    "https://releases.quietdrop.com/{{target}}/{{current_version}}"
-  ],
-  "dialog": true,
-  "pubkey": "YOUR_PUBLIC_KEY_HERE"
-}
-```
+QuietDrop can use Tauri's built-in updater for automatic updates for desktop applications.
 
 #### Setting Up the Update Server
 
 1. Host the update artifacts on a server.
-2. Create an update manifest file:
-
-```json
-{
-  "version": "0.2.0",
-  "notes": "New features and bug fixes",
-  "pub_date": "2023-10-15T19:25:57Z",
-  "platforms": {
-    "windows-x86_64": {
-      "signature": "SIGNATURE_HERE",
-      "url": "https://releases.quietdrop.com/windows/QuietDrop_0.2.0_x64_en-US.msi.zip"
-    },
-    "darwin-x86_64": {
-      "signature": "SIGNATURE_HERE",
-      "url": "https://releases.quietdrop.com/macos/QuietDrop_0.2.0_x64.app.tar.gz"
-    },
-    "linux-x86_64": {
-      "signature": "SIGNATURE_HERE",
-      "url": "https://releases.quietdrop.com/linux/quietdrop_0.2.0_amd64.AppImage.tar.gz"
-    }
-  }
-}
-```
-
-3. Generate signatures for each package:
-
-```bash
-tauri signer sign --config tauri.conf.json QuietDrop_0.2.0_x64_en-US.msi.zip
-```
+2. Create an update manifest file.
+3. Generate signatures for each package.
 
 ### Mobile Update Mechanisms
 
@@ -583,7 +486,7 @@ Error: Failed to load shared library: libwebkit2gtk-4.0.so
 Error: Invalid configuration: Could not find index.html
 ```
 
-**Solution**: Ensure the `distDir` in `tauri.conf.json` points to the correct directory containing your built frontend.
+**Solution**: Ensure the `frontendDist` in `tauri.conf.json` points to the correct directory containing your built frontend.
 
 #### Android Build Errors
 
@@ -593,12 +496,6 @@ Error: Android SDK not found
 
 **Solution**: Set the `ANDROID_HOME` environment variable to your Android SDK location.
 
-```
-Error: Failed to find NDK
-```
-
-**Solution**: Set the `ANDROID_NDK_HOME` environment variable or install the NDK through Android Studio.
-
 #### iOS Build Errors
 
 ```
@@ -606,12 +503,6 @@ Error: Xcode not found
 ```
 
 **Solution**: Install Xcode from the App Store and run `xcode-select --install`.
-
-```
-Error: Code signing identity not found
-```
-
-**Solution**: Set up your development team ID in `tauri.conf.json` and configure certificates in Xcode.
 
 ### Debugging Tips
 
@@ -625,79 +516,9 @@ Error: Code signing identity not found
    - macOS: `~/Library/Logs/com.quietdrop.app`
    - Linux: `~/.config/com.quietdrop.app/logs`
    - Android: Connect device and use `adb logcat`
-   - iOS: Use Xcode's Console app or `xcrun simctl`
+   - iOS: Use Xcode's Console app
 
-3. **Inspect the built artifacts**:
-   ```bash
-   # Check if WebAssembly files are included
-   ls -la quietdrop-tauri/dist/
-   
-   # Verify Tauri resources
-   ls -la quietdrop-tauri/src-tauri/target/release/bundle/
-   
-   # Check Android build outputs
-   ls -la quietdrop-tauri/gen/android/app/build/outputs/apk/
-   
-   # Check iOS build outputs
-   ls -la quietdrop-tauri/gen/ios/App/build/Products/
-   ```
-
-4. **Run with debug logging**:
-   ```bash
-   # Desktop
-   RUST_LOG=debug cargo tauri dev
-   
-   # Android
-   RUST_LOG=debug cargo tauri android dev
-   
-   # iOS
-   RUST_LOG=debug cargo tauri ios dev
-   ```
-
-## Platform-Specific Considerations
-
-### Desktop Considerations
-
-1. **Windows**
-   - Consider using code signing certificates for better user experience and security
-   - Test on different Windows versions (10, 11)
-   - Handle UAC elevation gracefully
-
-2. **macOS**
-   - Configure App Sandbox properly
-   - Ensure notarization for distribution outside App Store
-   - Test on Apple Silicon and Intel processors
-
-3. **Linux**
-   - Support multiple package formats (deb, AppImage, etc.)
-   - Test on popular distributions (Ubuntu, Fedora, etc.)
-   - Handle platform-specific filesystem paths
-
-### Mobile Considerations
-
-1. **Android**
-   - Handle different screen sizes and resolutions
-   - Manage battery usage efficiently
-   - Implement proper permissions requests
-   - Consider Play Store requirements and guidelines
-
-2. **iOS**
-   - Adhere to App Store Review Guidelines
-   - Handle app background/foreground transitions
-   - Implement proper permissions requests
-   - Consider screen sizes for different iPhone/iPad models
-
-### Cross-Platform Consistency
-
-1. **UI/UX Consistency**
-   - Adjust layouts based on platform but maintain brand identity
-   - Implement platform-specific UI patterns when appropriate
-   - Test user flows on all platforms
-
-2. **Feature Parity**
-   - Document any platform-specific limitations
-   - Provide alternative workflows when a feature isn't available on all platforms
-   - Clearly communicate platform differences to users
+3. **Inspect the built artifacts**
 
 ## Best Practices
 
@@ -708,66 +529,6 @@ Error: Code signing identity not found
 5. **Security**: Always sign your releases and verify signatures during updates.
 6. **Documentation**: Keep documentation up to date with each release.
 7. **Backup**: Securely back up your signing keys and certificates.
-8. **Beta Testing**: Implement beta channels for both desktop and mobile versions.
-
-### Mobile-Specific Best Practices
-
-1. **Responsive Design**: Ensure the UI works well on all screen sizes.
-2. **Battery Optimization**: Minimize network calls and background processing.
-3. **Offline Support**: Implement robust offline functionality.
-4. **Network Awareness**: Detect and adapt to varying network conditions.
-5. **Storage Management**: Be conscious of limited storage on mobile devices.
-
-## Distribution Channels
-
-### Desktop Distribution
-
-1. **Direct Download**: Offer installers on your website
-2. **Package Managers**: Distribute through platform-specific package managers
-   - Windows: Microsoft Store, Chocolatey, Winget
-   - macOS: App Store, Homebrew
-   - Linux: Snapcraft, Flathub, distro-specific repositories
-
-### Mobile Distribution
-
-1. **Android Distribution Channels**:
-   - Google Play Store (primary)
-   - F-Droid (for open source)
-   - Direct APK downloads
-   - Alternative app stores
-
-2. **iOS Distribution**:
-   - Apple App Store (primary)
-   - TestFlight for beta testing
-   - Enterprise distribution for organizational use
-
-### Self-Updating Mechanism
-
-For desktop applications, you can implement a self-updating mechanism using the Tauri updater:
-
-```rust
-// Check for updates programmatically
-#[tauri::command]
-async fn check_for_updates(window: Window) -> Result<(), String> {
-    #[cfg(desktop)]
-    {
-        tauri::async_runtime::spawn(async move {
-            match tauri::updater::builder(window.app_handle()).check().await {
-                Ok(update) => {
-                    if update.is_update_available() {
-                        // Notify user about the update
-                        window.emit("update-available", update).expect("failed to emit event");
-                    }
-                }
-                Err(e) => {
-                    eprintln!("Failed to check for updates: {}", e);
-                }
-            }
-        });
-    }
-    Ok(())
-}
-```
 
 ## Conclusion
 
