@@ -17,14 +17,16 @@
   </p>
 </div> 
 
-> <picture>
->   <source media="(prefers-color-scheme: dark)" srcset="./.images/quietdrop-icon-white.svg">
->   <source media="(prefers-color-scheme: light)" srcset="./.images/quietdrop-icon-black.svg">
->   <img alt="QuietDrop mascot" src="./.images/quietdrop-icon-black.svg" style="vertical-align: middle; margin-right: 12px" align="left" height="60">
-> </picture>
-> QuietDrop is a secure messaging application built in Rust, focusing on privacy and security. It provides end-to-end encryption using modern cryptographic libraries to ensure your messages remain confidential. Available as both a command-line tool and a cross-platform application for desktop and mobile devices.
-
-<br/>
+<div style="display: flex; align-items: flex-start; margin-bottom: 20px;">
+  <picture style="margin-right: 12px; flex-shrink: 0;">
+    <source media="(prefers-color-scheme: dark)" srcset="./.images/quietdrop-icon-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./.images/quietdrop-icon-black.svg">
+    <img alt="QuietDrop mascot" src="./.images/quietdrop-icon-black.svg" height="60">
+  </picture>
+  <div style="min-width: 0;">
+    QuietDrop is a secure messaging application built in Rust, focusing on privacy and security. It provides end-to-end encryption using modern cryptographic libraries to ensure your messages remain confidential. Available as both a command-line tool and a cross-platform application for desktop and mobile devices.
+  </div>
+</div>
 
 <div align="center">
   <p>
