@@ -1193,7 +1193,7 @@ async fn platform_specific_command(app: AppHandle) -> Result<String, String> {
 
 ## Resources
 
-- [Yew Documentation](https://yew.rs/docs/)
+- [Yew Documentation](https://yew.rs/docs/getting-started/introduction)
 - [Tauri 2.0 API](https://v2.tauri.app/reference/javascript/api/)
 - [WebAssembly MDN Guide](https://developer.mozilla.org/en-US/docs/WebAssembly)
 - [Rust WASM Book](https://rustwasm.github.io/docs/book/)

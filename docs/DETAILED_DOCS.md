@@ -154,7 +154,7 @@ pub struct Message {
 
 - Rust 1.70.0 or newer
 - Cargo package manager
-- System dependencies for Tauri (see [Tauri prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites/))
+- System dependencies for Tauri (see [Tauri prerequisites](https://tauri.app/start/prerequisites/))
 - For mobile development, additional mobile SDK dependencies
 
 ### Building From Source
