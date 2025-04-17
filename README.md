@@ -31,7 +31,8 @@
     <a href="docs/DETAILED_DOCS.md">Getting Started</a>&nbsp;&nbsp;•&nbsp;&nbsp;
     <a href="docs/ENCRYPTION.md">Security Architecture</a>&nbsp;&nbsp;•&nbsp;&nbsp;
     <a href="docs/API.md">API Reference</a>&nbsp;&nbsp;•&nbsp;&nbsp;
-    <a href="docs/TAURI_ARCHITECTURE.md">Tauri Architecture</a>
+    <a href="docs/TAURI_ARCHITECTURE.md">Tauri Architecture</a>&nbsp;&nbsp;•&nbsp;&nbsp;
+    <a href="https://github.com/chizy7/QuietDrop/wiki">Wiki</a>
   </p>
 </div>
 
@@ -138,6 +139,7 @@ msg.encrypt_content(&message, &recipient_public_key, &sender_secret_key);
 - [Frontend Development](docs/FRONTEND_DEVELOPMENT.md): Guide for Yew frontend development
 - [Building and Packaging](docs/BUILDING_AND_PACKAGING.md): Instructions for building and distributing
 - [Security Policy](docs/SECURITY.md): Security practices and vulnerability reporting
+- [Wiki](https://github.com/chizy7/QuietDrop/wiki): Community-maintained guides, tutorials, and additional resources
 
 ## Testing
 
