@@ -7,6 +7,7 @@ Thank you for your interest in contributing to QuietDrop! This document provides
 - [Code of Conduct](#code-of-conduct)
 - [Getting Started](#getting-started)
 - [Development Workflow](#development-workflow)
+- [Signed Commits](#signed-commits)
 - [Pull Request Process](#pull-request-process)
 - [Coding Standards](#coding-standards)
 - [Testing Guidelines](#testing-guidelines)
@@ -61,7 +62,7 @@ By participating in this project, you are expected to uphold our [Code of Conduc
    # or
    git checkout -b fix/issue-description
    ```
-   
+
    Use the following prefixes for your branches:
    - `feature/` for new features
    - `fix/` for bug fixes
@@ -77,10 +78,11 @@ By participating in this project, you are expected to uphold our [Code of Conduc
 3. **Commit Your Changes**
    ```bash
    git add .
-   git commit -m "Brief description of changes"
+   git commit -S -m "Brief description of changes"
    ```
-   
+
    Write clear, concise commit messages that explain the "what" and "why" of your changes.
+   Note the `-S` flag that ensures your commit is signed.
 
 4. **Keep Your Branch Updated**
    ```bash
@@ -97,9 +99,75 @@ By participating in this project, you are expected to uphold our [Code of Conduc
    - Go to GitHub and create a pull request from your branch
    - Fill out the PR template with details about your changes
 
+## Signed Commits
+
+QuietDrop requires all commits to be cryptographically signed to verify authorship. This helps ensure the authenticity of contributions and is an important security measure for a cryptographic application like ours.
+
+For detailed instructions on setting up and troubleshooting commit signing, please refer to the [GitHub documentation on signing commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits).
+
+### Setting up GPG signing
+
+1. **Generate a GPG key** (if you don't already have one):
+   ```bash
+   gpg --full-generate-key
+   ```
+
+2. **List your GPG keys** to get the key ID:
+   ```bash
+   gpg --list-secret-keys --keyid-format=long
+   ```
+   Look for a line like `sec   rsa4096/ABCDEF1234567890`
+
+3. **Configure Git to use your GPG key**:
+   ```bash
+   git config --global user.signingkey ABCDEF1234567890
+   git config --global commit.gpgsign true
+   ```
+
+4. **Add your GPG key to GitHub**:
+   - Export your GPG public key: `gpg --armor --export ABCDEF1234567890`
+   - Go to GitHub → Settings → SSH and GPG keys → New GPG key
+   - Paste your key and click "Add GPG key"
+
+### Setting up SSH signing (alternative)
+
+GitHub also supports SSH key-based commit verification:
+
+1. **Use an existing SSH key** or generate a new one:
+   ```bash
+   ssh-keygen -t ed25519 -C "your_email@example.com"
+   ```
+
+2. **Configure Git to use SSH signing**:
+   ```bash
+   git config --global gpg.format ssh
+   git config --global user.signingkey ~/.ssh/id_ed25519.pub
+   git config --global commit.gpgsign true
+   ```
+
+3. **Add your SSH key to GitHub** if you haven't already:
+   - Go to GitHub → Settings → SSH and GPG keys → New SSH key
+   - Add your public key
+
+### Signing commits
+
+With the above configuration, your commits will be signed automatically.
+If you need to sign commits manually:
+```bash
+git commit -S -m "Your commit message"
+```
+
+### Troubleshooting
+
+- **"error: gpg failed to sign the data"**:
+  - Check if `echo "test" | gpg --clearsign` works
+  - Make sure the email in your GPG key matches your Git email: `git config --global user.email`
+  - On macOS, try: `export GPG_TTY=$(tty)`
+
 ## Pull Request Process
 
 1. **PR Requirements**
+   - All commits must be signed
    - All tests must pass
    - Code must be formatted with `cargo fmt`
    - No new warnings from `cargo clippy`
