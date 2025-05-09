@@ -9,7 +9,7 @@ use argon2::{
 };
 use rand::rngs::OsRng;
 use std::fs::File;
-use std::io::{Read, Write};
+use std::io::{Read, Write}; // Testing branch rule
 
 const SALT_FILE: &str = "salt.txt";
 
