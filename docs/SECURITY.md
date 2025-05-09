@@ -46,6 +46,33 @@ If you have suggestions on how this process could be improved, please submit a p
 
 Security updates will be released as part of normal version releases unless an urgent fix is required. In that case, a security patch release will be issued.
 
+## Code Integrity Measures
+
+To ensure the integrity and authenticity of our codebase, we've implemented several security measures:
+
+### Signed Commits
+
+All commits to the QuietDrop repository must be cryptographically signed. This ensures:
+
+1. **Authenticity verification**: Confirms that commits actually come from the claimed author
+2. **Protection against account compromise**: Prevents attackers from pushing malicious code if they gain access to a contributor's GitHub account
+3. **Chain of custody**: Establishes a verifiable chain of code changes
+4. **Tampering detection**: Makes it easier to detect if commits have been modified after they were created
+
+Contributors must set up GPG or SSH commit signing before their contributions can be accepted. For setup instructions, please see:
+- Our [CONTRIBUTING.md](../CONTRIBUTING.md#signed-commits) documentation
+- [GitHub's official guide on signing commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits)
+
+### Branch Protection
+
+We enforce several branch protection rules on critical branches:
+- Require signed commits
+- Require pull request reviews before merging
+- Require status checks to pass before merging
+- Require conversation resolution before merging
+
+These measures help prevent unauthorized or unreviewed code from entering the codebase.
+
 ## Desktop Application Security
 
 With the migration to Tauri, additional security considerations apply to the desktop application:
