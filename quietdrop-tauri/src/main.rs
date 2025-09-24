@@ -2,8 +2,8 @@ use gloo_utils::format::JsValueSerdeExt;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::spawn_local;
-use yew::prelude::*;
 use web_sys::console;
+use yew::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
@@ -98,7 +98,9 @@ fn app() -> Html {
                 }
 
                 let tauri_obj = tauri.unwrap();
-                console::log_1(&format!("Frontend: Tauri object available: {:?}", tauri_obj).into());
+                console::log_1(
+                    &format!("Frontend: Tauri object available: {:?}", tauri_obj).into(),
+                );
 
                 // Check if core namespace exists
                 let core_obj = js_sys::Reflect::get(&tauri_obj, &"core".into());
@@ -117,7 +119,9 @@ fn app() -> Html {
                     return;
                 }
 
-                console::log_1(&"Frontend: Tauri is ready, calling send_message directly...".into());
+                console::log_1(
+                    &"Frontend: Tauri is ready, calling send_message directly...".into(),
+                );
                 console::log_1(&format!("Frontend: Request object: {:?}", request).into());
 
                 let serialized_request = JsValue::from_serde(&request).unwrap();
@@ -127,10 +131,12 @@ fn app() -> Html {
                 console::log_1(&"Frontend: Tauri invoke completed".into());
 
                 console::log_1(&format!("Frontend: Tauri result: {:?}", result).into());
-                
+
                 match result.into_serde::<MessageResponse>() {
                     Ok(response) => {
-                        console::log_1(&format!("Frontend: Success response: {:?}", response).into());
+                        console::log_1(
+                            &format!("Frontend: Success response: {:?}", response).into(),
+                        );
                         status.set(response.message);
                         if response.status == "success" {
                             msg_state.set(String::new()); // Clear message input on success
