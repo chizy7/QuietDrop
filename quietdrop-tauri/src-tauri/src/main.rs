@@ -31,15 +31,23 @@ struct MessageRequest {
 #[tauri::command]
 async fn send_message(
     app_state: State<'_, AppState>,
-    message_req: MessageRequest,
+    name: String,
+    content: String,
+    recipient: String,
 ) -> Result<MessageResponse, String> {
     // Log the incoming request
-    println!("Received message request from: {}", message_req.name);
+    println!("===Tauri send_message called ===");
+    println!("Received message request from: {}", name);
+    println!("Message content: {}", content);
+    println!("Recipient: {}", recipient);
 
     // Initialize sodiumoxide
+    println!("Initializing sodiumoxide...");
     sodiumoxide::init().expect("Failed to initialize sodiumoxide");
+    println!("Sodiumoxide initialized successfully");
 
     // Get server address from state
+    println!("Getting server address from state...");
     let server_addr = {
         let server_address = app_state.server_address.lock().map_err(|e| e.to_string())?;
         if server_address.is_empty() {
@@ -59,24 +67,28 @@ async fn send_message(
     }
 
     let server_public_key = server_key_result?;
+    println!("Server public key loaded successfully");
 
     // Generate client keypair
     println!("Generating client keypair...");
     let (public_key, secret_key) = generate_keypair();
+    println!("Client keypair generated successfully");
 
     // Create and encrypt the message
     println!("Creating message...");
     let mut msg = Message {
         timestamp: chrono::Utc::now(),
         message_type: MessageType::Text,
-        sender: message_req.name,
-        recipient: message_req.recipient,
+        sender: name,
+        recipient: recipient,
         content: vec![],
         public_key,
     };
+    println!("Message object created successfully");
 
     println!("Encrypting message...");
-    msg.encrypt_content(&message_req.content, &server_public_key, &secret_key);
+    msg.encrypt_content(&content, &server_public_key, &secret_key);
+    println!("Message encrypted successfully");
 
     // Send the message to the server
     println!("Sending message to server...");
@@ -134,16 +146,23 @@ fn set_server_address(app_state: State<AppState>, address: String) -> Result<(),
     }
 }
 
+#[tauri::command]
+fn test_command() {
+    println!("=== TEST COMMAND CALLED ===");
+}
+
 fn main() {
     println!("Starting QuietDrop Tauri application...");
 
     tauri::Builder::default()
-        .plugin(tauri_plugin_log::Builder::default().build())
-        .plugin(tauri_plugin_shell::init())
         .manage(AppState {
             server_address: Mutex::new("127.0.0.1:8080".to_string()),
         })
-        .invoke_handler(tauri::generate_handler![send_message, set_server_address])
+        .invoke_handler(tauri::generate_handler![
+            send_message,
+            set_server_address,
+            test_command
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

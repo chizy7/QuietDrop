@@ -55,13 +55,27 @@
 git clone https://github.com/chizy7/QuietDrop.git
 cd QuietDrop
 
+# Build the CLI (required for server)
+cargo build -p quietdrop-cli --release
+
 # Build the Tauri desktop application
 cd quietdrop-tauri
 trunk build
 cd src-tauri
 cargo tauri build
 
-# Run the application
+# Run the complete system (requires 3 terminals):
+
+# Terminal 1: Start the message server
+cd QuietDrop
+./target/release/quietdrop-cli server
+
+# Terminal 2: Start the frontend dev server
+cd QuietDrop/quietdrop-tauri
+trunk serve
+
+# Terminal 3: Run the Tauri application
+cd QuietDrop/quietdrop-tauri/src-tauri
 cargo tauri dev
 ```
 
