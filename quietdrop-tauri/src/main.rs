@@ -3,21 +3,22 @@ use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
+use web_sys::console;
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = ["window", "__TAURI__", "tauri"])]
+    #[wasm_bindgen(js_namespace = ["window", "__TAURI__", "core"])]
     async fn invoke(cmd: &str, args: JsValue) -> JsValue;
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 struct MessageRequest {
     name: String,
     content: String,
     recipient: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 struct MessageResponse {
     status: String,
     message: String,
@@ -82,18 +83,61 @@ fn app() -> Html {
                     recipient: recipient_val,
                 };
 
+                console::log_1(&"Frontend: About to send message request".into());
                 status.set("Sending message...".to_string());
+                console::log_1(&"Frontend: Status set to 'Sending message...'".into());
 
-                let result = invoke("send_message", JsValue::from_serde(&request).unwrap()).await;
+                // Check if Tauri is ready
+                let window = web_sys::window().unwrap();
+                let tauri = js_sys::Reflect::get(&window, &"__TAURI__".into());
 
+                if tauri.is_err() {
+                    console::log_1(&"Frontend: Tauri not ready yet, waiting...".into());
+                    status.set("Tauri not ready, please wait...".to_string());
+                    return;
+                }
+
+                let tauri_obj = tauri.unwrap();
+                console::log_1(&format!("Frontend: Tauri object available: {:?}", tauri_obj).into());
+
+                // Check if core namespace exists
+                let core_obj = js_sys::Reflect::get(&tauri_obj, &"core".into());
+                if core_obj.is_err() {
+                    console::log_1(&"Frontend: Tauri core namespace not found".into());
+                    status.set("Tauri core namespace not found".to_string());
+                    return;
+                }
+
+                // Check if invoke function exists in core
+                let core = core_obj.unwrap();
+                let invoke_fn = js_sys::Reflect::get(&core, &"invoke".into());
+                if invoke_fn.is_err() {
+                    console::log_1(&"Frontend: Tauri invoke function not found".into());
+                    status.set("Tauri invoke function not found".to_string());
+                    return;
+                }
+
+                console::log_1(&"Frontend: Tauri is ready, calling send_message directly...".into());
+                console::log_1(&format!("Frontend: Request object: {:?}", request).into());
+
+                let serialized_request = JsValue::from_serde(&request).unwrap();
+                console::log_1(&"Frontend: Request serialized successfully".into());
+
+                let result = invoke("send_message", serialized_request).await;
+                console::log_1(&"Frontend: Tauri invoke completed".into());
+
+                console::log_1(&format!("Frontend: Tauri result: {:?}", result).into());
+                
                 match result.into_serde::<MessageResponse>() {
                     Ok(response) => {
+                        console::log_1(&format!("Frontend: Success response: {:?}", response).into());
                         status.set(response.message);
                         if response.status == "success" {
                             msg_state.set(String::new()); // Clear message input on success
                         }
                     }
                     Err(e) => {
+                        console::log_1(&format!("Frontend: Error parsing response: {}", e).into());
                         status.set(format!("Error: {}", e));
                     }
                 }
