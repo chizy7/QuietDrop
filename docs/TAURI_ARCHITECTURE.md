@@ -29,7 +29,7 @@ graph TD
                 UI --> Events[Event Handling]
                 Events --> Commands[Command Invocation]
             end
-            
+
             subgraph "Rust Backend"
                 Commands --> CH[Command Handlers]
                 CH --> Core[quietdrop-core]
@@ -39,7 +39,7 @@ graph TD
                 Core --> C[Client Module]
                 Core --> S[Server Module]
             end
-            
+
             subgraph "System Integration"
                 Backend[Rust Backend] --> FS[File System Access]
                 Backend --> Network[Network I/O]
@@ -50,12 +50,12 @@ graph TD
             end
         end
     end
-    
+
     subgraph "Platform Targets"
         PlatformSpecific --> Desktop[Desktop - Windows/macOS/Linux]
         PlatformSpecific --> Mobile[Mobile - Android/iOS]
     end
-    
+
     Network --> RemoteServer[Remote Servers]
     Network --> OtherClients[Other QuietDrop Clients]
 ```
@@ -66,15 +66,14 @@ graph TD
 
 The project uses a Cargo workspace with multiple crates:
 
-```
-quietdrop/
-├── Cargo.toml                # Workspace manifest
-├── quietdrop-core/           # Core library with shared functionality
-├── quietdrop-cli/            # Command-line interface
-└── quietdrop-tauri/          # Tauri 2.0 cross-platform application
-    ├── src/                  # Yew frontend
-    └── src-tauri/            # Tauri backend
-```
+| **Directory/File** | **Description** |
+|----------------|-------------|
+| `Cargo.toml` | Workspace manifest |
+| `quietdrop-core/` | Core library with shared functionality |
+| `quietdrop-cli/` | Command-line interface |
+| `quietdrop-tauri/` | Tauri 2.0 cross-platform application |
+| `quietdrop-tauri/src/` | Yew frontend |
+| `quietdrop-tauri/src-tauri/` | Tauri backend |
 
 ### 2. Frontend Implementation (Yew)
 
@@ -100,9 +99,9 @@ Example responsive component structure:
 fn chat_view() -> Html {
     let messages = use_state(|| Vec::<Message>::new());
     let is_mobile = use_platform_detection();
-    
+
     // Component logic
-    
+
     html! {
         <div class={classes!("chat-container", if *is_mobile { "mobile" } else { "" })}>
             <MessageList messages={(*messages).clone()} />
@@ -138,7 +137,7 @@ async fn send_message(
     // Platform-specific checks
     #[cfg(mobile)]
     check_network_status()?;
-    
+
     // Use quietdrop-core to send message
     // ...
 }
@@ -188,7 +187,7 @@ fn get_platform_info() -> PlatformInfo {
         platform: "desktop".to_string(),
         // Other platform info
     };
-    
+
     info
 }
 
@@ -220,7 +219,7 @@ State is managed consistently across platforms:
        tray_handle: Mutex<Option<SystemTrayHandle>>,
        // Desktop-specific state
    }
-   
+
    #[cfg(mobile)]
    struct MobileState {
        push_token: Mutex<Option<String>>,
@@ -243,7 +242,7 @@ sequenceDiagram
     participant Core as quietdrop-core
     participant Platform as Platform APIs
     participant Network as Network Layer
-    
+
     User->>UI: Interacts with application
     UI->>Commands: Invokes Tauri command
     Commands->>Platform: Checks platform capabilities
@@ -264,19 +263,19 @@ sequenceDiagram
    ```bash
    # Install Rust
    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-   
+
    # Install Trunk (for Yew)
    cargo install trunk
-   
+
    # Install WebAssembly target
    rustup target add wasm32-unknown-unknown
-   
+
    # Install Tauri CLI
    cargo install tauri-cli
-   
+
    # For Android development
    # Install Android SDK, NDK, and other dependencies
-   
+
    # For iOS development
    # Install Xcode and iOS build tools
    ```
@@ -286,11 +285,11 @@ sequenceDiagram
    # For desktop
    cd quietdrop-tauri
    cargo tauri dev
-   
+
    # For Android
    cd quietdrop-tauri
    cargo tauri android dev
-   
+
    # For iOS
    cd quietdrop-tauri
    cargo tauri ios dev
@@ -329,7 +328,7 @@ fn use_platform_detection() -> bool {
     let window = web_sys::window().unwrap();
     let navigator = window.navigator();
     let user_agent = navigator.user_agent().unwrap();
-    
+
     user_agent.contains("Android") || user_agent.contains("iPhone")
 }
 
@@ -338,10 +337,10 @@ fn use_platform_detection() -> bool {
 fn get_platform() -> String {
     #[cfg(target_os = "android")]
     return "android".to_string();
-    
+
     #[cfg(target_os = "ios")]
     return "ios".to_string();
-    
+
     #[cfg(desktop)]
     return "desktop".to_string();
 }
@@ -365,19 +364,19 @@ async fn use_feature(app_handle: AppHandle) -> Result<(), String> {
         // Desktop-specific implementation
         return Ok(());
     }
-    
+
     #[cfg(target_os = "android")]
     {
         // Android-specific implementation
         return Ok(());
     }
-    
+
     #[cfg(target_os = "ios")]
     {
         // iOS-specific implementation
         return Ok(());
     }
-    
+
     Err("Feature not available on this platform".to_string())
 }
 ```
