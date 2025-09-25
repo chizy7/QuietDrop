@@ -20,27 +20,27 @@ graph TD
             C[Client Module] --> Core
             S[Server Module] --> Core
         end
-        
+
         subgraph "quietdrop-cli"
             CLI[Command Line Interface] --> Core
         end
-        
+
         subgraph "quietdrop-tauri"
             subgraph "Frontend (Yew)"
                 Y[Yew Components] --> WASM[WebAssembly]
             end
-            
+
             subgraph "Tauri 2.0 Backend"
                 T[Tauri Commands] --> Core
                 T --> P[Platform APIs]
             end
-            
+
             WASM <--> T
             P --> DesktopAPI[Desktop APIs]
             P --> MobileAPI[Mobile APIs]
         end
     end
-    
+
     DesktopAPI --> Desktop[Windows/macOS/Linux]
     MobileAPI --> Mobile[Android/iOS]
 ```
@@ -240,37 +240,21 @@ To run the built application:
 
 The project is now organized as a Rust workspace with multiple crates:
 
-```
-quietdrop/
-├── Cargo.toml                # Workspace manifest
-├── quietdrop-core/           # Core library with shared functionality
-│   ├── src/                  # Source files
-│   │   ├── encryption.rs     # Encryption logic
-│   │   ├── message.rs        # Message handling
-│   │   ├── client.rs         # Client operations
-│   │   ├── server.rs         # Server operations
-│   │   ├── authentication.rs # Authentication
-│   │   └── lib.rs            # Library exports
-│   └── tests/                # Integration tests
-├── quietdrop-cli/            # Command-line interface
-│   ├── src/
-│   │   └── main.rs           # CLI entry point
-│   └── Cargo.toml
-└── quietdrop-tauri/          # Tauri cross-platform application
-    ├── Cargo.toml            # Frontend dependencies
-    ├── index.html            # HTML entry point
-    ├── styles.css            # CSS styles
-    ├── src/                  # Yew frontend
-    │   ├── main.rs           # Frontend entry point
-    │   ├── components/       # UI components
-    │   ├── services/         # Service interfaces
-    │   └── models/           # Data models
-    └── src-tauri/            # Tauri backend
-        ├── src/
-        │   └── main.rs       # Tauri command handlers
-        ├── Cargo.toml
-        └── tauri.conf.json   # Tauri configuration
-```
+| **Directory/File** | **Description** |
+|----------------|-------------|
+| `Cargo.toml` | Workspace manifest |
+| `quietdrop-core/` | Core library with shared functionality |
+| `quietdrop-core/src/` | Source files (encryption, message handling, client/server operations, authentication, exports) |
+| `quietdrop-core/tests/` | Integration tests |
+| `quietdrop-cli/` | Command-line interface |
+| `quietdrop-cli/src/main.rs` | CLI entry point |
+| `quietdrop-cli/Cargo.toml` | CLI crate manifest |
+| `quietdrop-tauri/` | Tauri cross-platform application |
+| `quietdrop-tauri/Cargo.toml` | Frontend dependencies |
+| `quietdrop-tauri/index.html` | HTML entry point |
+| `quietdrop-tauri/styles.css` | CSS styles |
+| `quietdrop-tauri/src/` | Yew frontend (entry point, UI components, services, models) |
+| `quietdrop-tauri/src-tauri/` | Tauri backend (command handlers, manifest, configuration) |
 
 ## Development Workflow
 
@@ -324,7 +308,7 @@ We welcome contributions! Here's how to get started:
    - Install Tauri prerequisites
    - For mobile development, set up Android/iOS build environments
 
-2. **Fork and Clone**: 
+2. **Fork and Clone**:
    - Fork the repository on GitHub
    - Clone your fork locally
 

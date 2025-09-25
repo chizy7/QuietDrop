@@ -15,7 +15,7 @@
     <a href="https://yew.rs"><img src="https://img.shields.io/badge/Yew-0.20-orange?style=flat-square" alt="Yew"></a>
     <a href="https://www.rust-lang.org"><img src="https://img.shields.io/badge/Rust-1.70%2B-dea584?style=flat-square" alt="Rust"></a>
   </p>
-</div> 
+</div>
 
 > <picture>
 >   <source media="(prefers-color-scheme: dark)" srcset="./.images/quietdrop-icon-white.svg">
@@ -98,7 +98,7 @@ cargo build -p quietdrop-cli --release
 
 ## Repository Structure
 
-| Directory | Description |
+| **Directory** | **Description** |
 |-----------|-------------|
 | `quietdrop-core/` | Core library with shared encryption and messaging functionality |
 | `quietdrop-cli/` | Command-line interface for server and client operations |

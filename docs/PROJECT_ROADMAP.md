@@ -2,7 +2,7 @@
 
 This document outlines the development roadmap for QuietDrop, organized by timeline and priority.
 
-## ✅ Completed
+## Completed
 
 - [x] **Initial CLI Implementation**
    - Basic client-server communication
@@ -22,7 +22,7 @@ This document outlines the development roadmap for QuietDrop, organized by timel
 ## Immediate Goals (Next 1-2 Months)
 
 ### Core Functionality
-- [ ] **User Registration & Authentication System** 
+- [ ] **User Registration & Authentication System**
    - [ ] Implement proper user account creation and storage
    - [ ] Add session management
    - [ ] Implement password reset functionality
@@ -90,7 +90,7 @@ This document outlines the development roadmap for QuietDrop, organized by timel
    - [ ] Add group encryption key management
    - [ ] Support for user roles in groups
    - Issue #: "Implement basic group chat functionality" (TODO: update when issue is created)
-   - Issue #11: "Add group encryption protocols" 
+   - Issue #11: "Add group encryption protocols"
 
 - [ ] **File Transfer**
    - [ ] Support for encrypted file sharing
@@ -170,7 +170,7 @@ This document outlines the development roadmap for QuietDrop, organized by timel
    - [ ] Enhance documentation
    - [ ] Standardize coding patterns
    - Issue #: "Refactor client-server communication layer" (TODO: update when issue is created)
-   
+
 - [ ] **Dependency Management**
    - [ ] Regular updates of dependencies
    - [ ] Security patch management

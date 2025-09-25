@@ -8,7 +8,7 @@ The QuietDrop team takes security bugs seriously. We appreciate your efforts to 
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-Instead, please report them via email to [chizy7@outlook.com](mailto:chizy7@outlook.com) or through a private message to the project maintainers.
+Instead, please report them via email to [chizy@chizyhub.com](mailto:chizy@chizyhub.com) or through a private message to the project maintainers.
 
 Please include the following information in your report:
 
@@ -145,4 +145,4 @@ QuietDrop relies on several third-party libraries and frameworks. We make an eff
 
 ## Contact
 
-If you have any questions about this security policy, please contact [chizy7@outlook.com](mailto:chizy7@outlook.com).
+If you have any questions about this security policy, please contact [chizy@chizyhub.com](mailto:chizy@chizyhub.com).

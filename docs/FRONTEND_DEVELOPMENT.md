@@ -80,35 +80,19 @@ cargo tauri ios dev
 
 ## Project Structure
 
-```
-quietdrop-tauri/
-├── Cargo.toml          # Frontend dependencies
-├── index.html          # HTML entry point
-├── styles.css          # Global styles
-├── src/                # Frontend Rust code
-│   ├── main.rs         # Application entry point
-│   ├── app.rs          # Main application component
-│   ├── components/     # UI components
-│   │   ├── mod.rs      # Component exports
-│   │   ├── chat.rs     # Chat component
-│   │   ├── login.rs    # Login component
-│   │   ├── message.rs  # Message components
-│   │   └── ...         # Other components
-│   ├── models/         # Data models
-│   │   ├── mod.rs      # Model exports
-│   │   └── message.rs  # Message model
-│   ├── services/       # Frontend services
-│   │   ├── mod.rs      # Service exports
-│   │   └── tauri.rs    # Tauri command wrappers
-│   ├── utils/          # Utility functions
-│   │   ├── mod.rs      # Utility exports
-│   │   └── platform.rs # Platform detection utilities
-│   └── platform/       # Platform-specific code
-│       ├── mod.rs      # Platform exports
-│       ├── desktop.rs  # Desktop-specific components
-│       └── mobile.rs   # Mobile-specific components
-└── src-tauri/          # Tauri backend (separate)
-```
+| **Directory/File** | **Description** |
+|----------------|-------------|
+| `Cargo.toml` | Frontend dependencies |
+| `index.html` | HTML entry point |
+| `styles.css` | Global styles |
+| `src/main.rs` | Application entry point |
+| `src/app.rs` | Main application component |
+| `src/components/` | UI components (chat, login, message, etc.) |
+| `src/models/` | Data models (e.g., message model) |
+| `src/services/` | Frontend services (Tauri command wrappers, exports) |
+| `src/utils/` | Utility functions (platform detection, exports) |
+| `src/platform/` | Platform-specific code (desktop, mobile) |
+| `src-tauri/` | Tauri backend (separate) |
 
 ## Component Architecture
 
@@ -132,7 +116,7 @@ pub struct ChatProps {
 pub fn chat(props: &ChatProps) -> Html {
     let message = use_state(|| String::new());
     let is_mobile = is_mobile_device();
-    
+
     let onsubmit = {
         let on_send = props.on_send.clone();
         let message = message.clone();
@@ -142,7 +126,7 @@ pub fn chat(props: &ChatProps) -> Html {
             message.set(String::new());
         })
     };
-    
+
     let oninput = {
         let message = message.clone();
         Callback::from(move |e: InputEvent| {
@@ -152,7 +136,7 @@ pub fn chat(props: &ChatProps) -> Html {
             }
         })
     };
-    
+
     html! {
         <div class={classes!("chat", if *is_mobile { "mobile" } else { "desktop" })}>
             <div class="messages">
@@ -164,11 +148,11 @@ pub fn chat(props: &ChatProps) -> Html {
                 })}
             </div>
             <form onsubmit={onsubmit} class="message-form">
-                <input 
-                    type="text" 
-                    value={(*message).clone()} 
-                    oninput={oninput} 
-                    placeholder="Type a message..." 
+                <input
+                    type="text"
+                    value={(*message).clone()}
+                    oninput={oninput}
+                    placeholder="Type a message..."
                     class={classes!(if *is_mobile { "mobile-input" } else { "desktop-input" })}
                 />
                 <button type="submit">{"Send"}</button>
@@ -190,7 +174,7 @@ use crate::platform::{desktop, mobile};
 #[function_component(ConversationView)]
 pub fn conversation_view() -> Html {
     let is_mobile = is_mobile_device();
-    
+
     if *is_mobile {
         html! { <mobile::ConversationView /> }
     } else {
@@ -208,18 +192,18 @@ fn app() -> Html {
     let messages = use_state(|| Vec::<Message>::new());
     let logged_in = use_state(|| false);
     let is_mobile = is_mobile_device();
-    
+
     // Logic for handling login and messages
-    
+
     html! {
         <div class={classes!("app", if *is_mobile { "mobile-app" } else { "desktop-app" })}>
             <Header username={(*username).clone()} is_mobile={*is_mobile} />
-            
+
             if *logged_in {
-                <Chat 
-                    username={(*username).clone()} 
-                    messages={(*messages).clone()} 
-                    on_send={on_message_send} 
+                <Chat
+                    username={(*username).clone()}
+                    messages={(*messages).clone()}
+                    on_send={on_message_send}
                 />
             } else {
                 <Login on_login={on_login} is_mobile={*is_mobile} />
@@ -268,7 +252,7 @@ fn app() -> Html {
         logged_in: false,
         is_mobile: *is_mobile,
     });
-    
+
     html! {
         <ContextProvider<AppContext> context={(*user_ctx).clone()}>
             <AppContent />
@@ -280,7 +264,7 @@ fn app() -> Html {
 #[function_component(Header)]
 fn header() -> Html {
     let user_ctx = use_context::<AppContext>().expect("No user context found");
-    
+
     html! {
         <header class={classes!(if user_ctx.is_mobile { "mobile-header" } else { "desktop-header" })}>
             if user_ctx.logged_in {
@@ -312,7 +296,7 @@ struct AppState {
 
 impl Reducible for AppState {
     type Action = Action;
-    
+
     fn reduce(self: std::rc::Rc<Self>, action: Self::Action) -> std::rc::Rc<Self> {
         match action {
             Action::AddMessage(message) => {
@@ -357,7 +341,7 @@ fn app() -> Html {
         logged_in: false,
         is_mobile: *is_mobile,
     });
-    
+
     // Update mobile state when it changes
     {
         let state = state.clone();
@@ -370,7 +354,7 @@ fn app() -> Html {
             is_mobile_value
         );
     }
-    
+
     // Rest of component...
 }
 ```
@@ -402,13 +386,13 @@ struct MessageResponse {
 // Invoke a Tauri command
 fn send_message(content: String, recipient: String) {
     let request = MessageRequest { content, recipient };
-    
+
     spawn_local(async move {
         let response = invoke::<_, MessageResponse>(
             "send_message",
             &JsValue::from_serde(&request).unwrap()
         ).await;
-        
+
         match response {
             Ok(result) => {
                 // Handle success
@@ -442,7 +426,7 @@ pub fn send_message(
 ) {
     let request = MessageRequest { content, recipient };
     let is_mobile = is_mobile_device();
-    
+
     // Mobile-specific handling
     if *is_mobile {
         // Check network connectivity first
@@ -453,7 +437,7 @@ pub fn send_message(
                         callback(Err("No network connection available".to_string()));
                         return;
                     }
-                    
+
                     // Continue with sending if connected
                     send_message_internal(request, callback);
                 },
@@ -478,7 +462,7 @@ fn send_message_internal(
             "send_message",
             &JsValue::from_serde(&request).unwrap()
         ).await;
-        
+
         callback(response);
     });
 }
@@ -503,7 +487,7 @@ fn chat_view() -> Html {
     let input_value = use_state(|| String::new());
     let status = use_state(|| String::new());
     let is_mobile = is_mobile_device();
-    
+
     // Load messages on component mount
     {
         let messages = messages.clone();
@@ -520,21 +504,21 @@ fn chat_view() -> Html {
             ()
         );
     }
-    
+
     let on_send = {
         let input_value = input_value.clone();
         let status = status.clone();
-        
+
         Callback::from(move |e: SubmitEvent| {
             e.prevent_default();
             let content = (*input_value).clone();
-            
+
             if content.is_empty() {
                 return;
             }
-            
+
             status.set("Sending...".to_string());
-            
+
             message_service::send_message(
                 content,
                 "recipient".to_string(),
@@ -552,13 +536,13 @@ fn chat_view() -> Html {
             );
         })
     };
-    
+
     html! {
         <div class={classes!("chat-container", if *is_mobile { "mobile" } else { "desktop" })}>
             <div class="messages-list">
                 {for messages.iter().map(message_view)}
             </div>
-            
+
             <form onsubmit={on_send} class="message-form">
                 <input
                     type="text"
@@ -567,14 +551,14 @@ fn chat_view() -> Html {
                     placeholder="Type a message..."
                     class={if *is_mobile { "mobile-input" } else { "desktop-input" }}
                 />
-                <button 
+                <button
                     type="submit"
                     class={if *is_mobile { "mobile-button" } else { "desktop-button" }}
                 >
                     {"Send"}
                 </button>
             </form>
-            
+
             <div class="status-text">{(*status).clone()}</div>
         </div>
     }
@@ -596,7 +580,7 @@ pub fn is_mobile_device() -> UseStateHandle<bool> {
             .map(|win| {
                 let navigator = win.navigator();
                 let user_agent = navigator.user_agent().unwrap_or_default();
-                
+
                 user_agent.contains("Android") ||
                 user_agent.contains("iPhone") ||
                 user_agent.contains("iPad") ||
@@ -604,7 +588,7 @@ pub fn is_mobile_device() -> UseStateHandle<bool> {
             })
             .unwrap_or(false)
     });
-    
+
     // Check for orientation changes that might indicate tablet/desktop mode
     {
         let is_mobile = is_mobile.clone();
@@ -612,33 +596,33 @@ pub fn is_mobile_device() -> UseStateHandle<bool> {
             move |_| {
                 let listener = window().and_then(|win| {
                     let is_mobile_clone = is_mobile.clone();
-                    
+
                     let callback = Closure::wrap(Box::new(move || {
                         // Recheck mobile status after orientation change
                         let win = window().unwrap();
                         let navigator = win.navigator();
                         let user_agent = navigator.user_agent().unwrap_or_default();
-                        
-                        let is_mobile_device = 
+
+                        let is_mobile_device =
                             user_agent.contains("Android") ||
                             user_agent.contains("iPhone") ||
                             user_agent.contains("iPad") ||
                             user_agent.contains("Mobile");
-                        
+
                         // Update state if different
                         if is_mobile_device != *is_mobile_clone {
                             is_mobile_clone.set(is_mobile_device);
                         }
                     }) as Box<dyn FnMut()>);
-                    
+
                     win.add_event_listener_with_callback(
                         "orientationchange",
                         callback.as_ref().unchecked_ref()
                     ).ok()?;
-                    
+
                     Some(callback)
                 });
-                
+
                 // Clean up
                 move || {
                     // Keep the listener alive
@@ -648,7 +632,7 @@ pub fn is_mobile_device() -> UseStateHandle<bool> {
             ()
         );
     }
-    
+
     is_mobile
 }
 
@@ -669,7 +653,7 @@ pub fn screen_size_category() -> ScreenSize {
     window()
         .map(|win| {
             let width = win.inner_width().unwrap().as_f64().unwrap_or(0.0);
-            
+
             if width < 480.0 {
                 ScreenSize::Small // Mobile phone
             } else if width < 768.0 {
@@ -702,14 +686,14 @@ fn message_list() -> Html {
     let messages = use_state(|| Vec::<Message>::new());
     let is_mobile = is_mobile_device();
     let screen_size = screen_size_category();
-    
+
     // Determine list style based on screen size
     let list_style = match screen_size {
         ScreenSize::Small => "mobile-list compact",
         ScreenSize::Medium => "mobile-list",
         ScreenSize::Large | ScreenSize::ExtraLarge => "desktop-list",
     };
-    
+
     // Determine how many messages to show
     let visible_message_count = match screen_size {
         ScreenSize::Small => 5,
@@ -717,13 +701,13 @@ fn message_list() -> Html {
         ScreenSize::Large => 15,
         ScreenSize::ExtraLarge => 20,
     };
-    
+
     html! {
         <div class={list_style}>
             {for messages.iter().take(visible_message_count).map(|msg| {
                 html! {
-                    <MessageItem 
-                        message={msg.clone()} 
+                    <MessageItem
+                        message={msg.clone()}
                         compact={screen_size == ScreenSize::Small}
                         on_mobile={*is_mobile}
                     />
@@ -742,11 +726,11 @@ Show or hide elements based on platform:
 #[function_component(AppHeader)]
 fn app_header() -> Html {
     let is_mobile = is_mobile_device();
-    
+
     html! {
         <header class="app-header">
             <div class="logo">{"QuietDrop"}</div>
-            
+
             // Show menu icon on mobile, full menu on desktop
             if *is_mobile {
                 <button class="menu-button">{"☰"}</button>
@@ -772,7 +756,7 @@ Handle different input methods:
 fn interactive_element() -> Html {
     let is_mobile = is_mobile_device();
     let has_touch = has_touch_support();
-    
+
     let on_interact = {
         Callback::from(move |e: MouseEvent| {
             // Handle interaction
@@ -780,7 +764,7 @@ fn interactive_element() -> Html {
             // Action logic
         })
     };
-    
+
     let on_touch = {
         Callback::from(move |e: TouchEvent| {
             // Handle touch with different behavior if needed
@@ -788,9 +772,9 @@ fn interactive_element() -> Html {
             // Touch-specific logic
         })
     };
-    
+
     html! {
-        <div 
+        <div
             class={classes!("interactive", if *is_mobile { "touch-target" } else { "mouse-target" })}
             onclick={on_interact}
             ontouchstart={if has_touch { on_touch } else { Callback::noop() }}
@@ -813,7 +797,7 @@ use wasm_bindgen::prelude::*;
 // Listen for events from backend
 fn setup_event_listeners() -> Option<Closure<dyn FnMut(JsValue)>> {
     let messages = use_state(|| Vec::<Message>::new());
-    
+
     let messages_clone = messages.clone();
     let callback = Closure::wrap(Box::new(move |event: JsValue| {
         let message: Message = event.into_serde().unwrap();
@@ -821,7 +805,7 @@ fn setup_event_listeners() -> Option<Closure<dyn FnMut(JsValue)>> {
         current_messages.push(message);
         messages_clone.set(current_messages);
     }) as Box<dyn FnMut(JsValue)>);
-    
+
     window()
         .and_then(|w| w.get("__TAURI__").dyn_into::<JsValue>().ok())
         .and_then(|t| js_sys::Reflect::get(&t, &"event".into()).ok())
@@ -833,7 +817,7 @@ fn setup_event_listeners() -> Option<Closure<dyn FnMut(JsValue)>> {
                 &"new-message".into(),
                 &callback.as_ref().into(),
             ).unwrap();
-            
+
             // Return the callback to keep it alive
             callback
         })
@@ -843,7 +827,7 @@ fn setup_event_listeners() -> Option<Closure<dyn FnMut(JsValue)>> {
 fn message_monitor() -> Html {
     // Set up event listener on component mount
     let _listener = use_state(|| setup_event_listeners());
-    
+
     // Component body
     html! {
         <div>{"Monitoring for new messages..."}</div>
@@ -865,14 +849,14 @@ QuietDrop uses CSS for styling with responsive design principles:
     --accent-color: #e9c46a;
     --text-color: #333;
     --background-color: #f5f5f5;
-    
+
     /* Spacing variables for consistency */
     --spacing-xs: 0.25rem;
     --spacing-sm: 0.5rem;
     --spacing-md: 1rem;
     --spacing-lg: 1.5rem;
     --spacing-xl: 2rem;
-    
+
     /* Touch targets */
     --touch-target-size: 44px;
 }
@@ -940,7 +924,7 @@ body {
     .desktop-only {
         display: none;
     }
-    
+
     .input-group {
         flex-direction: column;
     }
@@ -950,7 +934,7 @@ body {
     .mobile-only {
         display: none;
     }
-    
+
     .input-group {
         flex-direction: row;
     }
@@ -986,14 +970,14 @@ Testing the frontend requires specific tools for WebAssembly and accommodating b
 mod tests {
     use super::*;
     use wasm_bindgen_test::*;
-    
+
     wasm_bindgen_test_configure!(run_in_browser);
-    
+
     #[wasm_bindgen_test]
     fn test_message_parsing() {
         let json = r#"{"content":"Hello","sender":"Alice","timestamp":"2023-01-01T12:00:00Z"}"#;
         let message: Message = serde_json::from_str(json).unwrap();
-        
+
         assert_eq!(message.content, "Hello");
         assert_eq!(message.sender, "Alice");
     }
@@ -1008,15 +992,15 @@ mod tests {
     use super::*;
     use wasm_bindgen_test::*;
     use yew::start_app;
-    
+
     wasm_bindgen_test_configure!(run_in_browser);
-    
+
     #[wasm_bindgen_test]
     async fn test_responsive_component() {
         // Simulate mobile viewport
         js_sys::eval("window.innerWidth = 375; window.innerHeight = 667;").unwrap();
         window().unwrap().dispatch_event(&web_sys::Event::new("resize").unwrap()).unwrap();
-        
+
         // Mount the component
         let handle = yew::start_app_in_element::<ResponsiveComponent>(
             web_sys::window()
@@ -1026,30 +1010,30 @@ mod tests {
                 .get_element_by_id("output")
                 .unwrap()
         );
-        
+
         // Give time for platform detection to run
         gloo_timers::future::TimeoutFuture::new(100).await;
-        
+
         // Check if mobile class is applied
         let component = gloo_utils::document()
             .query_selector(".responsive-component")
             .unwrap()
             .unwrap();
-        
-        assert!(component.class_list().contains("mobile"), 
+
+        assert!(component.class_list().contains("mobile"),
                "Component should have 'mobile' class on small viewport");
-        
+
         // Simulate desktop viewport
         js_sys::eval("window.innerWidth = 1280; window.innerHeight = 800;").unwrap();
         window().unwrap().dispatch_event(&web_sys::Event::new("resize").unwrap()).unwrap();
-        
+
         // Give time for platform detection to run
         gloo_timers::future::TimeoutFuture::new(100).await;
-        
+
         // Check if desktop class is applied
-        assert!(component.class_list().contains("desktop"), 
+        assert!(component.class_list().contains("desktop"),
                "Component should have 'desktop' class on large viewport");
-        
+
         // Clean up
         handle.destroy();
     }
@@ -1146,7 +1130,7 @@ let on_interact = {
 };
 
 html! {
-    <div 
+    <div
         onclick={on_interact.clone()}
         ontouchend={on_interact}
         class={if *is_mobile { "touch-item" } else { "clickable-item" }}
@@ -1171,21 +1155,21 @@ async fn platform_specific_command(app: AppHandle) -> Result<String, String> {
         // ...
         return Ok("Desktop operation completed".to_string());
     }
-    
+
     #[cfg(target_os = "android")]
     {
         // Android-specific implementation
         // ...
         return Ok("Android operation completed".to_string());
     }
-    
+
     #[cfg(target_os = "ios")]
     {
         // iOS-specific implementation
         // ...
         return Ok("iOS operation completed".to_string());
     }
-    
+
     // Fallback
     Err("Operation not supported on this platform".to_string())
 }
