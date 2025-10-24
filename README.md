@@ -10,7 +10,7 @@
     <a href="https://github.com/chizy7/QuietDrop/blob/master/LICENSE"><img src="https://img.shields.io/github/license/chizy7/QuietDrop?style=flat-square" alt="License"></a>
     <a href="https://github.com/chizy7/QuietDrop"><img src="https://img.shields.io/github/forks/chizy7/QuietDrop?style=flat-square" alt="GitHub Forks"></a>
     <a href="https://github.com/chizy7/QuietDrop/stargazers"><img src="https://img.shields.io/github/stars/chizy7/QuietDrop?style=flat-square" alt="GitHub Stars"></a>
-    <a href="CODE_OF_CONDUCT.md"><img src="https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg" alt="Contributor Covenant"></a>
+    <a href="CODE_OF_CONDUCT.md"><img src="https://img.shields.io/badge/Contributor%20Covenant-3.0-4baaaa.svg" alt="Contributor Covenant"></a>
     <a href="https://tauri.app"><img src="https://img.shields.io/badge/Tauri-2.x-blue?style=flat-square" alt="Tauri"></a>
     <a href="https://yew.rs"><img src="https://img.shields.io/badge/Yew-0.20-orange?style=flat-square" alt="Yew"></a>
     <a href="https://www.rust-lang.org"><img src="https://img.shields.io/badge/Rust-1.70%2B-dea584?style=flat-square" alt="Rust"></a>
@@ -198,3 +198,10 @@ QuietDrop is licensed under the [MIT License](LICENSE).
 - [Tokio](https://github.com/tokio-rs/tokio) for asynchronous runtime
 - [Serde](https://github.com/serde-rs/serde) for serialization
 - [Argon2](https://github.com/P-H-C/phc-winner-argon2) for password hashing
+
+## Contact Me
+
+For questions, feedback, or collaboration opportunities:
+
+- **Email**: [chizy@chizyhub.com](mailto:chizy@chizyhub.com)
+- **X(Twitter)**: [![Twitter Follow](https://img.shields.io/twitter/follow/chizyization?style=social)](https://x.com/Chizyization)
